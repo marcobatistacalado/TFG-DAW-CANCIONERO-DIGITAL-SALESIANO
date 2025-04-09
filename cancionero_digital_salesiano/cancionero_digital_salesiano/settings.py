@@ -52,10 +52,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'cancionero_digital_salesiano.urls'
 
+import os #para poder usar esa libreria
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'canciones', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,11 +128,11 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = 'static/'
-
+# Static files configuration
+STATIC_URL = '/static/'  # Public URL to access static files
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Directory to store additional static files (common to the whole project)
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
