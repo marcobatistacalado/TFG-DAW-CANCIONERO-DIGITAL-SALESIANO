@@ -1,0 +1,25 @@
+{% load static %}
+
+<div class="banner-container d-flex align-items-center" style="height: 400px;">
+    <div class="container">
+        <div class="row">
+            <!-- Frase centrada horizontal y verticalmente -->
+            <div class="col-12 d-flex justify-content-center align-items-center flex-column text-white text-center">
+                <p class="display-3" style="font-family: 'Great Vibes', cursive;">
+                    “Una casa sin música es como un cuerpo sin alma”<br>
+                    <strong>-Don Bosco-</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Buscador superpuesto en la parte superior derecha -->
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end position-absolute top-0 end-0 p-3">
+                <form class="d-flex" method="GET" action="{% url 'buscar_cancion' %}">
+                    <input class="form-control me-2" type="search" placeholder="Buscar..." name="q">
+                    <button class="btn btn-light" type="submit">🔍</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

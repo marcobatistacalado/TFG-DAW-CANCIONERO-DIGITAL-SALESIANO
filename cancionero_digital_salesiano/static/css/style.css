@@ -1,0 +1,58 @@
+/* Usar @font-face para cargar las fuentes locales */
+@font-face {
+    font-family: 'Raleway';
+    src: url("{% static 'fonts/Raleway/static/Raleway-Regular.ttf' %}") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Raleway';
+    src: url("{% static 'fonts/Raleway/static/Raleway-Bold.ttf' %}") format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Playfair Display';
+    src: url("{% static '/fonts/Playfair_Display/static/PlayfairDisplay-Medium.ttf' %}") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Playfair Display';
+    src: url("{% static '/fonts/Playfair_Display/static/PlayfairDisplay-Bold.ttf' %}") format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+.main-bg-color{
+    background-color: #d81e14;
+}
+.main-color{
+    background-color: #d81e14;
+}
+
+.width-logo{
+    width: 120px;
+}
+
+h1,h2,h3,h4,h5{
+    font-family: 'Playfair Display';
+}
+
+p{
+    font-family: 'Raleway';
+}
+
+/* Estilo para el contenedor del banner con la imagen de fondo */
+.banner-container {
+    background-image: url('/static/images/banner-donbosco-paginaprincipal.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 400px; /* Ajusta la altura según sea necesario */
+    position: relative;
+}
+
