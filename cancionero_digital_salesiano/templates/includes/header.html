@@ -1,0 +1,21 @@
+{% load static %}
+<header class="main-bg-color text-white py-3">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-3 col-md-3 col-sm-2">
+                <img src="{% static 'images/logoPrincipal.png' %}" class="width-logo" alt="Logo" style="max-width: 120px;">
+            </div>
+            <div class="col-6 col-md-6 col-sm-8 text-center">
+                <h1 class="display-3">Cancionero Salesiano</h1>
+            </div>
+
+            <div class="col-3 col-md-3 col-sm-2 text-end">
+                <a href="#" class="text-white"> <!--ENLACE INICIAR SESION O PERFIL: DINAMICAMENTE-->
+                    <i class="bi bi-person-circle" style="font-size: 5em;"></i>
+                </a>
+            </div>
+
+        </div>
+        <!--AQUI HAY QUE METER EL MENU DINAMICAMENTE EN FUNCION DE SI EL USUARIO HA INICIADO SESION O NO-->
+    </div>
+</header>
