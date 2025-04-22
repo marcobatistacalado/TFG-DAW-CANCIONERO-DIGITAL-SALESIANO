@@ -51,8 +51,19 @@ p{
 .banner-container {
     background-image: url('/static/images/banner-donbosco-paginaprincipal.jpg');
     background-size: cover;
-    background-position: center;
-    height: 400px; /* Ajusta la altura según sea necesario */
+    background-position: center top -90px;
+    
+    /* Ajustes visuales */
+    backdrop-filter: blur(15px) saturate(40%) brightness(80%);
+    -webkit-backdrop-filter: blur(15px) saturate(40%) brightness(80%);
+
+    background-color: rgba(255, 255, 255, 0.3); /* Da transparencia al fondo */
+
+    /* Dimensiones y posición */
+    height: 10vh;
+    max-height: 400px;
     position: relative;
+
 }
+
 
