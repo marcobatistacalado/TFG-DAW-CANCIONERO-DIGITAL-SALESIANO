@@ -4,18 +4,21 @@
 
 {% block content %}
 
-<h2 class="text-danger fw-bold text-center mb-4">Tiempo Litúrgico: {{ tiempo_actual.nombre }}</h2>
+<h2 class="text-danger fw-bold text-center mb-4">
+    Tiempo Litúrgico: {{ tiempo_actual.nombre_tiempo }}
+</h2>
+
 
 <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 justify-content-center">
     {% for cancion in canciones %}
-    {% if cancion.id %}
         <div class="col">
-            <a href="{% url 'detalle_cancion' cancion.id %}" class="btn btn-danger w-100">
+            <a href="{% url 'detalle_cancion' cancion.id_cancion %}" class="btn btn-danger w-100">
                 {{ cancion.titulo }}
             </a>
         </div>
-    {% endif %}
-{% endfor %}
-
+    {% empty %}
+        <p>No hay canciones disponibles para este tiempo litúrgico.</p>
+    {% endfor %}
 </div>
+
 {% endblock %}
