@@ -1,0 +1,11 @@
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 justify-content-center w-100">
+    {% for cancion in canciones %}
+        <div class="col cancion">
+            <a href="{% url 'detalle_cancion' cancion.id_cancion %}" class="btn btn-danger w-100">
+                {{ cancion.titulo }}
+            </a>
+        </div>
+    {% empty %}
+        <p>No hay canciones disponibles para este tiempo litúrgico.</p>
+    {% endfor %}
+</div>
