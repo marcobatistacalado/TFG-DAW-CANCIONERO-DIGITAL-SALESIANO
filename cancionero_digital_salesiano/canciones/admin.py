@@ -26,8 +26,14 @@ class ListaPersonalAdmin(admin.ModelAdmin):
 
 @admin.register(Cancion)
 class CancionAdmin(admin.ModelAdmin):
-    list_display = ("id_cancion", "titulo", "id_tiempo")
+    list_display = ("id_cancion", "titulo", "nombre_tiempo")  # Usamos un campo 'nombre_tiempo' personalizado
     search_fields = ("titulo",)
+
+    def nombre_tiempo(self, obj):
+        return obj.id_tiempo.nombre_tiempo  # Devolvemos solo el nombre del tiempo litúrgico
+    nombre_tiempo.admin_order_field = 'id_tiempo'  # Permite ordenar por 'id_tiempo'
+    nombre_tiempo.short_description = 'Tiempo Litúrgico'  # Título de la columna en el admin
+
 
 @admin.register(TiempoLiturgico)
 class TiempoLiturgicoAdmin(admin.ModelAdmin):

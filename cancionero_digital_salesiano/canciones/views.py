@@ -1,10 +1,13 @@
+#cambios
 from django.shortcuts import render, get_object_or_404
+from datetime import date, timedelta
 from .models import Cancion, TiempoLiturgico
 from datetime import date, timedelta
 
 #añadido
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+
 
 def calcular_fecha_pascua(anio):
     a = anio % 19
@@ -63,12 +66,25 @@ def obtener_tiempo_liturgico_actual():
 
 
 def index(request):
-    tiempo_actual = TiempoLiturgico.objects.first()  # Aquí deberías determinar el tiempo litúrgico actual con lógica real
-    canciones = Cancion.objects.filter(id_tiempo=tiempo_actual)
+    nombre_tiempo = obtener_tiempo_liturgico_actual()  # Obtener el tiempo litúrgico actual
+    # Obtener el objeto TiempoLiturgico correspondiente al tiempo litúrgico actual
+    tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact=nombre_tiempo).first()
+
+    if not tiempo_actual:
+        # Si no se encuentra un tiempo litúrgico, asignar el de "Ampliación" por defecto
+        tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact="Ampliación").first()
+
+    if tiempo_actual:
+        # Filtrar las canciones por el id_tiempo
+        canciones = Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo)
+    else:
+        canciones = Cancion.objects.none()
+
     return render(request, 'canciones/index.html', {
         'tiempo_actual': tiempo_actual,
         'canciones': canciones,
     })
+
 
 def song_detail(request, pk):
     cancion = get_object_or_404(Cancion, pk=pk)
