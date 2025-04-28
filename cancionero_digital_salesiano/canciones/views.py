@@ -2,6 +2,12 @@
 from django.shortcuts import render, get_object_or_404
 from datetime import date, timedelta
 from .models import Cancion, TiempoLiturgico
+from datetime import date, timedelta
+
+#añadido
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 
 def calcular_fecha_pascua(anio):
     a = anio % 19
@@ -83,7 +89,7 @@ def index(request):
 def song_detail(request, pk):
     cancion = get_object_or_404(Cancion, pk=pk)
     return render(request, 'canciones/song_detail.html', {'cancion': cancion})
-
+'''
 def buscar_cancion(request):
     query = request.GET.get('q')
     canciones = Cancion.objects.filter(titulo__icontains=query) if query else []
@@ -91,3 +97,27 @@ def buscar_cancion(request):
         'query': query,
         'canciones': canciones,
     })
+'''
+
+def search(request):
+    query = request.GET.get('q', '')
+    nombre_tiempo = obtener_tiempo_liturgico_actual()
+    tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact=nombre_tiempo).first()
+
+    # Filtrar canciones según la consulta de búsqueda
+    if len(query) >= 3:
+        canciones = Cancion.objects.filter(titulo__icontains=query)
+    else:
+        canciones = Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo) if tiempo_actual else Cancion.objects.none()
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Renderiza solo el fragmento de canciones y devuelve como respuesta JSON
+        html = render_to_string('canciones/canciones_list.html', {'canciones': canciones})
+        return JsonResponse({'html': html})
+    
+    # Si no es una solicitud AJAX, renderiza la página completa
+    return render(request, 'canciones/canciones_list.html', {
+        'tiempo_actual': tiempo_actual,
+        'canciones': canciones
+    })
+

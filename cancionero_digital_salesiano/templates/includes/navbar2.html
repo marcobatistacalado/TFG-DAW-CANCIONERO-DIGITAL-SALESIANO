@@ -15,11 +15,32 @@
         <!-- Buscador superpuesto en la parte superior derecha -->
         <div class="row">
             <div class="col-12 d-flex justify-content-end position-absolute top-0 end-0 p-3">
-                <form class="d-flex" method="GET" action="{% url 'buscar_cancion' %}">
-                    <input class="form-control me-2" type="search" placeholder="Buscar..." name="q">
-                    <button class="btn btn-light" type="submit">🔍</button>
+                <form id="search-form">
+                    <input id="search-input" class="form-control me-2" type="search" placeholder="Buscar..." name="q">
                 </form>
+                
+                
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const songListContainer = document.getElementById('song-list');
+    
+        searchInput.addEventListener('input', function() {
+            const query = this.value;
+    
+            if (query.length >= 3 || query.length === 0) {
+                fetch(`/search/?q=${encodeURIComponent(query)}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        songListContainer.innerHTML = html;
+                    });
+            }
+        });
+    });
+    </script>
+    

@@ -9,9 +9,13 @@
 </h2>
 
 
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 justify-content-center">
+
+<!-- Aquí es donde se actualizarán las canciones -->
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 justify-content-center" id="song-list">
     {% for cancion in canciones %}
-        <div class="col">
+
+        <div class="col cancion">
+
             <a href="{% url 'detalle_cancion' cancion.id_cancion %}" class="btn btn-danger w-100">
                 {{ cancion.titulo }}
             </a>
