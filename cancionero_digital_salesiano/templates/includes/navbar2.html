@@ -1,10 +1,13 @@
 {% load static %}
 
-<div class="banner-container d-flex align-items-center" style="height: 400px;">
-    <div class="container">
-        <div class="row">
-            <!-- Frase centrada horizontal y verticalmente -->
-            <div class="col-12 d-flex justify-content-center align-items-center flex-column text-white text-center">
+<div class="banner-container position-relative d-flex align-items-center" style="height: 400px;">
+    <div class="container position-relative h-100">
+        <!-- Imagen de fondo -->
+        <img class="imagen-banner w-100 h-100 object-fit-cover" src="{% static 'images/banner-donbosco-paginaprincipal.jpg' %}" alt="Banner Don Bosco" style="object-fit: cover;">
+
+        <!-- Frase centrada -->
+        <div class="row content-banner position-absolute top-50 start-50 translate-middle text-center text-white">
+            <div class="col-12">
                 <p class="display-3" style="font-family: 'Great Vibes', cursive;">
                     “Una casa sin música es como un cuerpo sin alma”<br>
                     <strong>-Don Bosco-</strong>
@@ -12,35 +15,11 @@
             </div>
         </div>
 
-        <!-- Buscador superpuesto en la parte superior derecha -->
-        <div class="row">
-            <div class="col-12 d-flex justify-content-end position-absolute top-0 end-0 p-3">
-                <form id="search-form">
-                    <input id="search-input" class="form-control me-2" type="search" placeholder="Buscar..." name="q">
-                </form>
-                
-                
-            </div>
+        <!-- Buscador arriba a la derecha -->
+        <div class="position-absolute top-0 end-0 p-3">
+            <form id="search-form" class="d-flex">
+                <input id="search-input" class="form-control" type="search" placeholder="Buscar..." name="q">
+            </form>
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search-input');
-        const songListContainer = document.getElementById('song-list');
-    
-        searchInput.addEventListener('input', function() {
-            const query = this.value;
-    
-            if (query.length >= 3 || query.length === 0) {
-                fetch(`/search/?q=${encodeURIComponent(query)}`)
-                    .then(response => response.text())
-                    .then(html => {
-                        songListContainer.innerHTML = html;
-                    });
-            }
-        });
-    });
-    </script>
-    
