@@ -89,15 +89,6 @@ def index(request):
 def song_detail(request, pk):
     cancion = get_object_or_404(Cancion, pk=pk)
     return render(request, 'canciones/song_detail.html', {'cancion': cancion})
-'''
-def buscar_cancion(request):
-    query = request.GET.get('q')
-    canciones = Cancion.objects.filter(titulo__icontains=query) if query else []
-    return render(request, 'canciones/busqueda.html', {
-        'query': query,
-        'canciones': canciones,
-    })
-'''
 
 def search(request):
     query = request.GET.get('q', '')

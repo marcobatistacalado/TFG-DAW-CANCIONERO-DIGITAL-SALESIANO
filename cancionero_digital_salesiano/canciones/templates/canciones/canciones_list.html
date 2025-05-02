@@ -1,11 +1,14 @@
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 justify-content-center w-100">
-    {% for cancion in canciones %}
-        <div class="col cancion">
-            <a href="{% url 'detalle_cancion' cancion.id_cancion %}" class="btn btn-danger w-100">
+{% for cancion in canciones %}
+<div class="col-12 col-sm-12 col-md-12 col-lg-3 cancion">
+    <div class="card h-100">
+
+            <a href="{% url 'detalle_cancion' cancion.id_cancion %}" class="btn btn-danger w-100 text-truncate"
+                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ cancion.titulo }}
             </a>
-        </div>
-    {% empty %}
-        <p>No hay canciones disponibles para este tiempo litúrgico.</p>
-    {% endfor %}
+ 
+    </div>
 </div>
+{% empty %}
+<p>No hay canciones disponibles para este tiempo litúrgico.</p>
+{% endfor %}

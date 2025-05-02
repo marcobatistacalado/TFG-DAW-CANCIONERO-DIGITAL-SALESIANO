@@ -1,49 +1,24 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Cancionero Digital{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-        <!-- Incluir Bootstrap Icons -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
+    <!-- Incluir Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/main.js'%}"></script>
 </head>
-<!--Parte de script añadido-->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search-input');  // El input de búsqueda
-        const songListContainer = document.getElementById('song-list');  // El contenedor de las canciones
-    
-        searchInput.addEventListener('input', function() {
-            const query = this.value;
-    
-            // Solo realiza la búsqueda si hay 3 o más caracteres, o si el campo está vacío
-            if (query.length >= 3 || query.length === 0) {
-                fetch(`/search/?q=${encodeURIComponent(query)}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'  // Indicamos que es una solicitud AJAX
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Aquí actualizamos solo el contenido de #song-list con el nuevo HTML
-                    songListContainer.innerHTML = data.html;
-                });
-            }
-        });
-    });
-    </script>
-    
-    
-    
+
 <body>
 
     {% include "includes/header.html" %}
     {% include "includes/navbar.html" %}
-    {% include "includes/navbar2.html" %}
+    {% include "includes/banner.html" %}
 
     <main class="container my-4">
         {% block content %}{% endblock %}
@@ -53,4 +28,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
