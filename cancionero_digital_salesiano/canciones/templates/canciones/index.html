@@ -8,21 +8,10 @@
     Tiempo Litúrgico: {{ tiempo_actual.nombre_tiempo }}
 </h2>
 
-
-
 <!-- Aquí es donde se actualizarán las canciones -->
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3 justify-content-center" id="song-list">
-    {% for cancion in canciones %}
-
-        <div class="col cancion">
-
-            <a href="{% url 'detalle_cancion' cancion.id_cancion %}" class="btn btn-danger w-100">
-                {{ cancion.titulo }}
-            </a>
-        </div>
-    {% empty %}
-        <p>No hay canciones disponibles para este tiempo litúrgico.</p>
-    {% endfor %}
+<div class="row g-3" id="song-list">
+    {% include 'canciones/canciones_list.html'%}
+    
 </div>
 
 {% endblock %}
