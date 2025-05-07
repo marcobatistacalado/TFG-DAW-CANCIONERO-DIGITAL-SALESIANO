@@ -64,6 +64,10 @@ def obtener_tiempo_liturgico_actual():
         # Si no se encuentra un tiempo litúrgico válido, asignar "Ampliacion" por defecto
         return 'Ampliación'
 
+def obtener_tiempo_liturgico(id_tiempo):
+    tiempo_liturgico = get_object_or_404(TiempoLiturgico, id_tiempo=id_tiempo)
+    return tiempo_liturgico
+
 
 def index(request):
     nombre_tiempo = obtener_tiempo_liturgico_actual()  # Obtener el tiempo litúrgico actual
@@ -88,7 +92,15 @@ def index(request):
 
 def song_detail(request, pk):
     cancion = get_object_or_404(Cancion, pk=pk)
-    return render(request, 'canciones/song_detail.html', {'cancion': cancion})
+    tiempo_actual = cancion.id_tiempo
+    lineas = cancion.lineacancion_set.all().order_by('linea_num')  # relación inversa por ForeignKey
+
+    return render(request, 'canciones/cancion.html', {
+        'cancion': cancion,
+        'tiempo_actual': tiempo_actual,
+        'lineas': lineas
+    })
+
 
 def search(request):
     query = request.GET.get('q', '')
