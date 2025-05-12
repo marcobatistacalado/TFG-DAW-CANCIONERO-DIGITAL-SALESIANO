@@ -4,7 +4,9 @@
 
 {% block content %}
 
-<h2 class="text-danger fw-bold text-center mb-4">
+<!--he cambiado esto para ver si se puede cambiar dinamicamente cuando se realiza una busqueda-->
+<h2 id="search-title" class="text-danger fw-bold text-center mb-4"
+    data-default-title="Tiempo Litúrgico: {{ tiempo_actual.nombre_tiempo }}">
     Tiempo Litúrgico: {{ tiempo_actual.nombre_tiempo }}
 </h2>
 

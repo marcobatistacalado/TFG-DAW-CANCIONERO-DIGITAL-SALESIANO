@@ -14,21 +14,18 @@
 
         <div class="collapse navbar-collapse text-center" id="navbarNav">
             <div class="d-flex w-100 align-items-center justify-content-center">
-                <ul class="navbar-nav ">
+                <ul class="navbar-nav fw-bold text-uppercase"> <!-- Letras más gruesas y visibles -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link text-white" href="{% url 'index' %}">Inicio</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{% url 'canciones' %}">Canciones</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Listas</a>
+                        <a class="nav-link text-white" href="#">Listas</a> 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Favoritos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"></a> <!-- Este es el espacio en blanco -->
+                        <a class="nav-link text-white" href="#">Favoritos</a>
                     </li>
                 </ul>
             </div>

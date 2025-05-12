@@ -16,10 +16,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(response => response.json())
-            .then(data => {
-                // Aquí actualizamos solo el contenido de #song-list con el nuevo HTML
+            .then(data => { //esto es lo que he añadido para que cambie el titulo de timepo liturgico a busqueda actual:...
                 songListContainer.innerHTML = data.html;
+            
+                const titleElement = document.getElementById('search-title');
+                const defaultTitle = titleElement.dataset.defaultTitle;
+            
+                if (query.length >= 3) {
+                    titleElement.textContent = 'Buscando: "${query}"';
+                } else {
+                    titleElement.textContent = defaultTitle;
+                }
             });
+            
+            
+            
         }
     });
     

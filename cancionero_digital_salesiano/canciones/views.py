@@ -140,21 +140,20 @@ def search(request):
     nombre_tiempo = obtener_tiempo_liturgico_actual()
     tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact=nombre_tiempo).first()
 
-    # Filtrar canciones según la consulta de búsqueda
     if len(query) >= 3:
         canciones = Cancion.objects.filter(titulo__icontains=query)
     else:
         canciones = Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo) if tiempo_actual else Cancion.objects.none()
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # Renderiza solo el fragmento de canciones y devuelve como respuesta JSON
         html = render_to_string('canciones/canciones_list.html', {'canciones': canciones})
         return JsonResponse({'html': html})
-    
-    # Si no es una solicitud AJAX, renderiza la página completa
-    return render(request, 'canciones/canciones_list.html', {
+
+    # Aquí renderizamos el index.html completo pero con búsqueda
+    return render(request, 'canciones/index.html', {
         'tiempo_actual': tiempo_actual,
-        'canciones': canciones
+        'canciones': canciones,
+        'busqueda': query  # 👈 Este valor activa el título "Buscando:"
     })
 
 def canciones_complete(request):
