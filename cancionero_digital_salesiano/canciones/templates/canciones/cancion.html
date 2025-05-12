@@ -8,38 +8,58 @@
 
     <div class="card-body">
         <div id="song-container" data-song-id="{{ cancion.id }}">
-        <div class="row g-4">
-            <!-- Letra y acordes -->
+            <div class="row g-4">
+                <!-- Letra y acordes -->
 
-            <div class="col-lg-6 col-md-12">
-                <h4 class="fw-bold text-danger">Letra y Acordes</h4>
-                <div class="border rounded p-3 bg-light letra-movil">
-                    {% for linea in lineas %}
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="fw-bold text-danger">Letra y Acordes</h4>
+                    <div class="border rounded p-3 bg-light letra-movil">
+                        {% for linea in lineas %}
                         {% if linea.tipo_linea == 'acorde'%}
-                        <pre> <i> {{ linea.contenido }} </i> </pre>
+                        <pre class="acordes"> <i> {{ linea.contenido }} </i> </pre>
                         {% else %}
-                        <pre> {{ linea.contenido }} </pre>
+                        <pre class="linea"> {{ linea.contenido }} </pre>
                         {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <!-- Información adicional -->
-            <div class="col-12 col-md-6">
-                <h4 class="fw-bold main-color">Información</h4>
-                <p><strong class="">Tiempo Litúrgico:</strong> {{ tiempo_actual.nombre_tiempo }}</p>
+                <!-- Información adicional -->
+                <div class="col-12 col-md-6">
+                    <h4 class="fw-bold main-color">Información</h4>
+                    <div class="mb-3">
+                        <p><strong class="">Tiempo Litúrgico:</strong> {{ tiempo_actual.nombre_tiempo }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <p><strong class="main-color">Tono:</strong></p>
+                        <div class="d-flex gap-2 mb-3">
+                            <button id="btn-up" class="btn btn-success">↑ Subir tono</button>
+                            <button id="btn-down" class="btn btn-warning">↓ Bajar tono</button>
+                        </div>
+                    </div>
+                    <div class="mb-3"><!--zoom-->
+                        <div class="d-flex align-items-center gap-2">
+                            <div>
+                                <button type="button" class="btn btn-outline-info d-flex gap-2" id="btn-zoom-in">
+                                    <i class="bi bi-zoom-in"></i>Aumentar
+                                </button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-warning d-flex gap-2" id="btn-zoom-out">
+                                    <i class="bi bi-zoom-out mr-3"></i> Reducir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" id="btn-solo-letra">
+                            <i class="bi bi-zoom-in"></i>Solo letra
+                        </button>
 
-                <div class="mb-3">
-                    <p><strong class="main-color">Tono:</strong></p>
-                    <div class="tono mt-1"><p>Tono</p></div>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-<div class="d-flex gap-2 mb-3">
-  <button id="btn-up" class="btn btn-success">↑ Subir tono</button>
-  <button id="btn-down" class="btn btn-warning">↓ Bajar tono</button>
-</div>
 
     </div>
 </div>
