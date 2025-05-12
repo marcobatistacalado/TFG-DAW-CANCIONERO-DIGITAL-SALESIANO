@@ -11,19 +11,30 @@
         </h2>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-sm-12 col-md-6">
-                <h4>Letra y Acrodes</h4>
-                {% for linea in lineas %}
-                <pre>{{ linea.contenido }}</pre>
-                {% endfor %}
+        <div class="row g-4">
+            <!-- Letra y acordes -->
+            <div class="col-lg-6 col-md-12">
+                <h4 class="fw-bold text-danger">Letra y Acordes</h4>
+                <div class="border rounded p-3 bg-light letra-movil">
+                    {% for linea in lineas %}
+                        {% if linea.tipo_linea == 'acorde'%}
+                        <pre> <i> {{ linea.contenido }} </i> </pre>
+                        {% else %}
+                        <pre> {{ linea.contenido }} </pre>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-            <div class="col-6">
-                <h4>Tiempo</h4>
-                Tiempo: {{ tiempo_actual.nombre_tiempo }}
-                <div class="tono">
-                    <i>*</i>
-                    <i>*</i>
+
+            <!-- Información adicional -->
+            <div class="col-12 col-md-6">
+                <h4 class="fw-bold text-danger">Información</h4>
+                <p><strong class="text-danger">Tiempo Litúrgico:</strong> {{ tiempo_actual.nombre_tiempo }}</p>
+                <div class="mb-3">
+                    <strong class="text-danger">Tono:</strong>
+                    <div class="tono mt-1">
+                        Tono
+                    </div>
                 </div>
                 <div class="size">
                     <i>*</i>
