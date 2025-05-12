@@ -75,5 +75,13 @@ p{
     text-align: center;
 }
 
+/*Tamaño aproximado de tablets...*/
+@media screen and (max-width: 912px) { 
+    .letra-movil{
+        text-align: center;
+    }
+    
+}
+
 
 
