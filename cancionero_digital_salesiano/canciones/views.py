@@ -109,23 +109,106 @@ def index(request):
     })
 
 
-'''
-Funcion para la visualizacion de la vista de detalles de la canción.
-Obtenemos lo siguiente:
-- La canción seleccionada por el usuario (si no se encuentra, se lanza un error 404).
-- El tiempo litúrgico actual (si no se encuentra, se asigna "Ampliación" por defecto).
-- Las líneas de la canción seleccionada, ordenadas por el número de línea.
-'''
-def song_detail(request, pk):
-    cancion = get_object_or_404(Cancion, pk=pk)
-    tiempo_actual = cancion.id_tiempo
-    lineas = cancion.lineacancion_set.all().order_by('linea_num')  # relación inversa por ForeignKey
+import re
 
+# Lista de acordes básicos en notación latina. Se utilizará para identificar y transponer acordes.
+NOTAS_ESP = ["DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"]
+
+# Diccionario para normalizar acordes inusuales o mal escritos.
+NORMALIZAR = {
+    "E#": "FA", "B#": "DO",        # E# y B# son notas teóricas, pero equivalen a FA y DO
+    "FB": "MI", "CB": "SI",        # FB (FA bemol) = MI, CB = SI
+    "FA##": "SOL", "DO##": "RE",   # Notas con doble sostenido se simplifican
+    "MI#": "FA", "SI#": "DO",      # Otros casos poco comunes
+}
+
+# Esta función toma un acorde y separa su "base" (ej: DO) y su "sufijo" (ej: m7)
+def obtener_base_y_sufijo(acorde):
+    acorde_original = acorde.strip().replace("♯", "#")  # Reemplazamos el símbolo Unicode ♯ por #
+    acorde_mayus = acorde_original.upper()              # Convertimos a mayúsculas para comparación
+
+    # Recorremos la lista de acordes buscando el que coincida al inicio
+    for base in sorted(NOTAS_ESP, key=len, reverse=True):  # Se ordena por largo para que DO# se detecte antes que DO
+        if acorde_mayus.startswith(base):
+            sufijo = acorde_original[len(base):]  # Se extrae el sufijo (manteniendo su formato original)
+            return base, sufijo
+    return None, None  # Si no se encuentra base válida
+
+# Transpone un acorde una cantidad determinada de semitonos hacia arriba o abajo
+def transponer_acorde(acorde, semitonos):
+    base, sufijo = obtener_base_y_sufijo(acorde)
+    
+    # Si el acorde no se reconoce como válido, se devuelve tal cual
+    if base not in NOTAS_ESP:
+        print(f"El acorde {acorde} no se reconoce (base: {base})")
+        return acorde
+
+    idx = NOTAS_ESP.index(base)                        # Buscamos la posición actual en la escala
+    nuevo_idx = (idx + semitonos) % len(NOTAS_ESP)     # Calculamos la nueva posición (circular en escala)
+    nuevo_base = NOTAS_ESP[nuevo_idx]                  # Obtenemos la nueva nota base
+
+    # Verificamos si el nuevo acorde completo requiere normalización
+    if nuevo_base + sufijo in NORMALIZAR:
+        return NORMALIZAR[nuevo_base + sufijo]
+
+    return nuevo_base + sufijo  # Devolvemos acorde transpuesto
+
+# Transpone todos los acordes encontrados en una línea de texto
+def transponer_linea(linea, semitonos=1):
+    # Expresión regular para detectar acordes con posibles sufijos (como m, m7, sus4, etc.)
+    pattern = r'\b([A-ZÑa-zñ]{2,4}#?(m7|maj7|7M|m|7|sus4|sus2|6|m6)?)\b'
+
+    # Reemplaza cada acorde detectado por su versión transpuesta
+    def reemplazo(match):
+        acorde = match.group(0)
+        return transponer_acorde(acorde, semitonos)
+
+    return re.sub(pattern, reemplazo, linea)  # Aplica la transposición en la línea completa
+
+from django.template.loader import render_to_string
+
+def song_detail(request, pk):
+    # Obtenemos la canción específica por su clave primaria (pk).
+    # Si no existe, lanzamos un error 404.
+    cancion = get_object_or_404(Cancion, pk=pk)
+
+    # Obtenemos todas las líneas asociadas a la canción, ordenadas por número de línea.
+    lineas = cancion.lineacancion_set.all().order_by('linea_num')
+
+    # Obtenemos el valor del parámetro 'transpose' (cantidad de semitonos a transponer).
+    # Por defecto será 0 (sin transposición).
+    semitonos = int(request.GET.get('transpose', 0))
+    print("Semitonos recibidos:", semitonos)
+
+    # Creamos una nueva lista donde guardaremos las líneas transpuestas
+    lineas_transpuestas = []
+
+    for linea in lineas:
+        contenido = linea.contenido  # Texto original de la línea
+
+        # Si es una línea de tipo "acorde" y se ha pedido transposición
+        if linea.tipo_linea == 'acorde' and semitonos != 0:
+            print(f"Transponiendo acorde: {contenido}")
+            contenido = transponer_linea(contenido, semitonos)
+
+        # Añadimos la línea transpuesta (o sin cambios) a la lista
+        lineas_transpuestas.append({
+            'contenido': contenido,
+            'tipo_linea': linea.tipo_linea
+        })
+
+    # Si la petición viene por AJAX (desde JS), devolvemos solo el fragmento HTML necesario
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('canciones/lineas_fragment.html', {'lineas': lineas_transpuestas})
+        return JsonResponse({'html': html})
+
+    # Si no es AJAX, renderizamos la página completa del detalle de la canción
     return render(request, 'canciones/cancion.html', {
         'cancion': cancion,
-        'tiempo_actual': tiempo_actual,
-        'lineas': lineas
+        'lineas': lineas_transpuestas,
+        'semitonos': semitonos  # Para mostrar el estado actual de transposición en el frontend
     })
+
 
 '''
 Funcion de busqueda de las canciones.
