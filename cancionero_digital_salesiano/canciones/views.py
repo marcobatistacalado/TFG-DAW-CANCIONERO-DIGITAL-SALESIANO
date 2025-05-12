@@ -116,7 +116,7 @@ def search(request):
         html = render_to_string('canciones/canciones_list.html', {'canciones': canciones})
         return JsonResponse({'html': html})
 
-    # 👇 Aquí renderizamos el index.html completo pero con búsqueda
+    # Aquí renderizamos el index.html completo pero con búsqueda
     return render(request, 'canciones/index.html', {
         'tiempo_actual': tiempo_actual,
         'canciones': canciones,
