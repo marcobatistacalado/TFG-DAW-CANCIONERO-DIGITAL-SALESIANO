@@ -1,0 +1,7 @@
+{% for linea in lineas %}
+    {% if linea.tipo_linea == 'acorde' %}
+        <pre><i>{{ linea.contenido }}</i></pre>
+    {% else %}
+        <pre>{{ linea.contenido }}</pre>
+    {% endif %}
+{% endfor %}

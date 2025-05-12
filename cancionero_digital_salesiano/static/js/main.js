@@ -1,40 +1,85 @@
+console.log("📦 main.js cargado correctamente");
 
-//Metodo para buscar
-console.log("Hola desde el main.js")
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');  // El input de búsqueda
-    const songListContainer = document.getElementById('song-list');  // El contenedor de las canciones
+document.addEventListener('DOMContentLoaded', function () {
 
-    searchInput.addEventListener('input', function() {
-        const query = this.value;
+    // === Elementos del DOM ===
+    const searchInput = document.getElementById('search-input');
+    const searchForm = document.getElementById('search-form');
+    const songListContainer = document.getElementById('song-list');
+    const searchTitle = document.getElementById('search-title');
+    const defaultTitle = searchTitle ? searchTitle.dataset.defaultTitle : '';
 
-        // Solo realiza la búsqueda si hay 3 o más caracteres, o si el campo está vacío
-        if (query.length >= 3 || query.length === 0) {
-            fetch(`/search/?q=${encodeURIComponent(query)}`, {
+    const btnUp = document.getElementById('btn-up');
+    const btnDown = document.getElementById('btn-down');
+    const letraDiv = document.querySelector('.letra-movil');
+
+    // === 🔍 FUNCIONALIDAD DE BÚSQUEDA EN VIVO ===
+    if (searchForm && searchInput && songListContainer) {
+
+        // Evita que el formulario recargue la página al hacer submit
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+        });
+
+        // Al escribir en el input, hacer una búsqueda AJAX si hay 3+ caracteres o está vacío
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim();
+
+            if (query.length >= 3 || query.length === 0) {
+                fetch(`/search/?q=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    songListContainer.innerHTML = data.html;
+
+                    // Cambiar el título dinámicamente según la búsqueda
+                    if (searchTitle) {
+                        searchTitle.textContent = (query.length >= 3)
+                            ? `Buscando: ${query}`
+                            : defaultTitle;
+                    }
+
+                    // Si cambia el listado de canciones, puede que haya que reactivar otras funciones JS
+                })
+                .catch(err => console.error("Error en búsqueda AJAX:", err));
+            }
+        });
+    }
+
+    // === 🎵 FUNCIONALIDAD DE TRANSPOSICIÓN DE ACORDES ===
+    if (btnUp && btnDown && letraDiv) {
+        let transpose = 0;
+
+        function updateSongTone() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('transpose', transpose);  // Actualiza el parámetro en la URL
+
+            fetch(url, {
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'  // Indicamos que es una solicitud AJAX
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
             .then(response => response.json())
-            .then(data => { //esto es lo que he añadido para que cambie el titulo de timepo liturgico a busqueda actual:...
-                songListContainer.innerHTML = data.html;
-            
-                const titleElement = document.getElementById('search-title');
-                const defaultTitle = titleElement.dataset.defaultTitle;
-            
-                if (query.length >= 3) {
-                    titleElement.textContent = 'Buscando: "${query}"';
-                } else {
-                    titleElement.textContent = defaultTitle;
-                }
-            });
-            
-            
-            
+            .then(data => {
+                letraDiv.innerHTML = data.html;  // Reemplaza el HTML con los acordes transpuestos
+            })
+            .catch(err => console.error("Error al transponer:", err));
         }
-    });
-    
+
+        // Botón para subir tono
+        btnUp.addEventListener('click', () => {
+            transpose += 1;
+            updateSongTone();
+        });
+
+        // Botón para bajar tono
+        btnDown.addEventListener('click', () => {
+            transpose -= 1;
+            updateSongTone();
+        });
+    }
+
 });
-
-
-//
