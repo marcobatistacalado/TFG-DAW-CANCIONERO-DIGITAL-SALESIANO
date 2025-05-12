@@ -1,10 +1,7 @@
-#cambios
 from django.shortcuts import render, get_object_or_404
 from datetime import date, timedelta
 from .models import Cancion, TiempoLiturgico
 from datetime import date, timedelta
-
-#añadido
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 

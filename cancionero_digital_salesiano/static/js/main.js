@@ -4,6 +4,11 @@ console.log("Hola desde el main.js")
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');  // El input de búsqueda
     const songListContainer = document.getElementById('song-list');  // El contenedor de las canciones
+    const searchForm = document.getElementById('search-form');
+
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // ✅ Esto evita que el formulario haga submit y recargue la página
+    });
 
     searchInput.addEventListener('input', function() {
         const query = this.value;
@@ -23,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const defaultTitle = titleElement.dataset.defaultTitle;
             
                 if (query.length >= 3) {
-                    titleElement.textContent = 'Buscando: "${query}"';
+                    titleElement.textContent = `Buscando: ${query}`;
                 } else {
                     titleElement.textContent = defaultTitle;
                 }
