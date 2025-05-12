@@ -162,3 +162,9 @@ def canciones_complete(request):
     return render (request, 'canciones/index.html', {
         'canciones': canciones,
     })
+
+def canciones_complete(request):
+    canciones = Cancion.objects.all()
+    return render (request, 'canciones/index.html', {
+        'canciones': canciones,
+    })
