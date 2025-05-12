@@ -12,13 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnDown = document.getElementById("btn-down");
     const letraDiv = document.querySelector(".letra-movil");
 
-    //=== Funcion de hacer zooom===
+    //=== Funcion de hacer zooom ===
     const aumentarBtn = document.getElementById("btn-zoom-in");
-    const reducirBtn = document.getElementById(".btn-zoom-out");
+    const reducirBtn = document.getElementById("btn-zoom-out");
     const letraContenedor = document.querySelector(".letra-movil");
 
     // === Botón para mostrar solo letra ===
     const soloLetraBtn = document.getElementById("btn-solo-letra");
+    console.log("Botón soloLetraBtn:", soloLetraBtn);
 
     // === 🔍 FUNCIONALIDAD DE BÚSQUEDA EN VIVO ===
     if (searchForm && searchInput && songListContainer) {
@@ -92,13 +93,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const minFontSize = 10;
     let fontSize; //= localStorage.getItem('fontSize'); Ver por que por defecto me pone un tamñao 32??
     fontSize = fontSize ? parseInt(fontSize) : 16;
-    console.log(fontSize);
     letraContenedor.style.fontSize = fontSize + "px";
 
     aumentarBtn.addEventListener("click", function () {
         if (fontSize < maxFontSize) {
             fontSize += 2;
-            console.log(fontSize);
             letraContenedor.style.fontSize = fontSize + "px";
             localStorage.setItem("fontSize", fontSize);
         }
@@ -107,24 +106,35 @@ document.addEventListener("DOMContentLoaded", function () {
     reducirBtn.addEventListener("click", function () {
         if (fontSize > minFontSize) {
             fontSize -= 2;
+            console.log("Reduciendo tamaño de letra a:", fontSize);
             letraContenedor.style.fontSize = fontSize + "px";
             localStorage.setItem("fontSize", fontSize);
         }
     });
 
     // === Funcion de solo letra ===
+    let acordesVisibles = true; // Estado inicial
 
-    soloLetraBtn.addEventListener("click", function () {
-        console.log("Botón 'Solo Letra' presionado");
+    if (soloLetraBtn) {
+        soloLetraBtn.addEventListener('click', function () {
+            acordesVisibles = !acordesVisibles;
+            console.log("Estado de acordes visibles:", acordesVisibles);
 
-        // Ocultar todos los acordes
-        document.querySelectorAll(".acordes").forEach((el) => {
-            el.style.display = "none";
+            if (acordesVisibles) {
+                // Mostrar acordes
+                document.querySelectorAll('.acordes').forEach(el => {
+                    el.style.display = 'block';
+                });
+                soloLetraBtn.innerHTML = `<i class="bi bi-minus-circle"></i> Solo letra`;
+            } else {
+                // Ocultar acordes
+                document.querySelectorAll('.acordes').forEach(el => {
+                    el.style.display = 'none';
+                });
+                soloLetraBtn.innerHTML = `<i class="bi bi-plus-circle"></i> Añadir acordes`;
+            }
         });
+    }
 
-        // Mostrar solo las líneas de letra
-        document.querySelectorAll(".linea").forEach((el) => {
-            el.style.display = "block";
-        });
-    });
+
 });
