@@ -1,7 +1,7 @@
 {% for linea in lineas %}
     {% if linea.tipo_linea == 'acorde' %}
-        <pre><i>{{ linea.contenido }}</i></pre>
+        <pre class="acordes"><i>{{ linea.contenido }}</i></pre>
     {% else %}
-        <pre>{{ linea.contenido }}</pre>
+        <pre class="linea">{{ linea.contenido }}</pre>
     {% endif %}
 {% endfor %}

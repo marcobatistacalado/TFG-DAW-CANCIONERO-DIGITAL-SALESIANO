@@ -95,20 +95,39 @@ document.addEventListener("DOMContentLoaded", function () {
     fontSize = fontSize ? parseInt(fontSize) : 16;
     letraContenedor.style.fontSize = fontSize + "px";
 
+    // Función para actualizar botones
+    function actualizarBotones() {
+        if (fontSize >= maxFontSize) {
+            aumentarBtn.setAttribute("disabled", "true");
+        } else {
+            aumentarBtn.removeAttribute("disabled");
+        }
+
+        if (fontSize <= minFontSize) {
+            reducirBtn.setAttribute("disabled", "true");
+        } else {
+            reducirBtn.removeAttribute("disabled");
+        }
+    }
+
+    // Llamar al inicio para reflejar el estado actual
+    actualizarBotones();
+
     aumentarBtn.addEventListener("click", function () {
         if (fontSize < maxFontSize) {
             fontSize += 2;
             letraContenedor.style.fontSize = fontSize + "px";
             localStorage.setItem("fontSize", fontSize);
+            actualizarBotones();
         }
     });
 
     reducirBtn.addEventListener("click", function () {
         if (fontSize > minFontSize) {
             fontSize -= 2;
-            console.log("Reduciendo tamaño de letra a:", fontSize);
             letraContenedor.style.fontSize = fontSize + "px";
             localStorage.setItem("fontSize", fontSize);
+            actualizarBotones();
         }
     });
 
@@ -116,25 +135,23 @@ document.addEventListener("DOMContentLoaded", function () {
     let acordesVisibles = true; // Estado inicial
 
     if (soloLetraBtn) {
-        soloLetraBtn.addEventListener('click', function () {
+        soloLetraBtn.addEventListener("click", function () {
             acordesVisibles = !acordesVisibles;
             console.log("Estado de acordes visibles:", acordesVisibles);
 
             if (acordesVisibles) {
                 // Mostrar acordes
-                document.querySelectorAll('.acordes').forEach(el => {
-                    el.style.display = 'block';
+                document.querySelectorAll(".acordes").forEach((el) => {
+                    el.style.display = "block";
                 });
-                soloLetraBtn.innerHTML = `<i class="bi bi-minus-circle"></i> Solo letra`;
+                soloLetraBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>Solo letra`;
             } else {
                 // Ocultar acordes
-                document.querySelectorAll('.acordes').forEach(el => {
-                    el.style.display = 'none';
+                document.querySelectorAll(".acordes").forEach((el) => {
+                    el.style.display = "none";
                 });
                 soloLetraBtn.innerHTML = `<i class="bi bi-plus-circle"></i> Añadir acordes`;
             }
         });
     }
-
-
 });
