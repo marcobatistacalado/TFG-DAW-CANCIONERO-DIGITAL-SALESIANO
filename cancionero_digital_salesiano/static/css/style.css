@@ -80,6 +80,11 @@ pre{
     text-align: center;
 }
 
+.letra-movil{
+   max-height: 400px; /* o lo que prefieras */
+    overflow-y: auto;
+}
+
 /*Tamaño aproximado de tablets...*/
 @media screen and (max-width: 912px) { 
     .letra-movil{
