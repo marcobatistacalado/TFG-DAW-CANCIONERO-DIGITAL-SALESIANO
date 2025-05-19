@@ -154,4 +154,74 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+
+    // === 🚀 Auto Scroll ===
+    const scrollBtn = document.getElementById("btn-scroll");
+    let scrollInterval = null;
+    let isScrolling = false;
+    let velocidad = 1; // Velocidad inicial
+    const velocidadDisplay = document.getElementById("velocidad-actual");
+
+    //Si pulamnos los botones de velocidad
+    const plusBtn = document.getElementById("btn-pls-speed");
+    const minusBtn = document.getElementById("btn-mn-speed");
+    if (plusBtn) {
+        plusBtn.addEventListener("click", () => {
+            if (velocidad < 10) { // Limitar la velocidad máxima
+                velocidad += 1;
+                actualizarVelocidadDisplay();
+                console.log("Velocidad aumentada a:", velocidad);
+            }
+        });
+    }
+    if (minusBtn) {
+        minusBtn.addEventListener("click", () => {
+            if (velocidad > 1) {
+                velocidad -= 1;
+                actualizarVelocidadDisplay()
+                console.log("Velocidad disminuida a:", velocidad);
+            }
+        });
+    }
+
+    //velocidades
+    function actualizarVelocidadDisplay() {
+        if (velocidadDisplay) {
+            velocidadDisplay.textContent = velocidad;
+        }
+    }
+
+
+    if (scrollBtn && letraContenedor) {
+        scrollBtn.addEventListener("click", () => {
+            if (!isScrolling) {
+                scrollBtn.innerHTML = `<i class="bi bi-pause-circle"></i> Detener scroll`;
+                isScrolling = true;
+
+                scrollInterval = setInterval(() => {
+                    // Desplazamos el contenedor hacia abajo
+                    letraContenedor.scrollBy({
+                        top: velocidad, // puedes ajustar la velocidad aquí
+                        behavior: "smooth"// Como queremos que sea a la hora de hacer scroll, auto lo hace muy tosco y dificil de leer
+                    });
+
+                    // Si llegó al final, detenemos el scroll
+                    if (
+                        letraContenedor.scrollTop + letraContenedor.clientHeight >=
+                        letraContenedor.scrollHeight
+                    ) {
+                        clearInterval(scrollInterval);
+                        isScrolling = false;
+                        scrollBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>scroll`;
+                    }
+                }, 50); // cada 50ms, ajusta para hacerlo más lento o rápido
+            } else {
+                clearInterval(scrollInterval);
+                isScrolling = false;
+                scrollBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>scroll`;
+            }
+        });
+    }
+
 });
