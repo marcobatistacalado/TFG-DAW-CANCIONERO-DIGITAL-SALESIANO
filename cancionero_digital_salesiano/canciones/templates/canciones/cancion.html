@@ -17,6 +17,8 @@
                         {% for linea in lineas %}
                         {% if linea.tipo_linea == 'acorde'%}
                         <pre class="acordes"> <i> {{ linea.contenido }} </i> </pre>
+                        {% elif linea.tipo_linea == 'estribillo' %}
+                        <pre class="linea estribillo"><b>{{linea.contenido}}</b></pre>
                         {% else %}
                         <pre class="linea"> {{ linea.contenido }} </pre>
                         {% endif %}
