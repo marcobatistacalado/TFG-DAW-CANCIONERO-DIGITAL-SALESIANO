@@ -1,16 +1,57 @@
 {% load static %}
+<header class="main-bg-color text-white py-3">
+  <div class="container-fluid px-3">
+    <div class="d-flex align-items-center justify-content-between">
+      
+      <!-- Logo a la izquierda -->
+      <a href="{% url 'index' %}" class="d-flex align-items-center text-white text-decoration-none">
+        <img src="{% static 'images/logoPrincipal.png' %}" alt="Logo" style="width: 3rem; height: 3rem; object-fit: contain;">
+      </a>
 
-<header class="main-bg-color text-white">
-    <div class="container-fluid  d-flex justify-content-around align-items-center">
-        <img src="{% static 'images/logoPrincipal.png' %}" class="width-logo" alt="Logo" style="max-width: 120px;">
-        <h1 class="display-3">Cancionero Salesiano</h1>
-        <div class="text-end">
-            <a href="#" class="text-white"> <!--ENLACE INICIAR SESION O PERFIL: DINAMICAMENTE-->
-                <i class="bi bi-person-circle" style="font-size: 5em;"></i>
-            </a>
-        </div>
-        <!--AQUI HAY QUE METER EL MENU DINAMICAMENTE EN FUNCION DE SI EL USUARIO HA INICIADO SESION O NO-->
+      <!-- Título: centrado en md+, a la izquierda en sm -->
+      <h1 class="d-none d-md-block flex-grow-1 text-center m-0 header-title fw-bold">
+    Cancionero Salesiano
+    </h1>
+
+      <!-- Icono perfil a la derecha -->
+      <div class="dropdown ms-3">
+        <a href="#" class="d-block text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 2.5rem;">
+          <i class="bi bi-person-circle"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end text-small">
+          <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
+          <li><a class="dropdown-item" href="#">Registrarse</a></li>
+          <li><a class="dropdown-item" href="#">Perfil</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+        </ul>
+      </div>
+
+      <!-- Botón hamburguesa visible solo en xs/sm -->
+      <button class="navbar-toggler ms-3 d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
     </div>
+
+    <!-- Menú responsive -->
+    <nav class="navbar navbar-expand-md">
+      <div class="collapse navbar-collapse justify-content-center mt-3 mt-md-0" id="mainNavbar">
+        <ul class="navbar-nav fs-5">
+          <li class="nav-item">
+            <a class="nav-link text-white px-3" href="{% url 'index' %}">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white px-3" href="{% url 'canciones' %}">Canciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white px-3" href="#">Listas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white px-3" href="#">Favoritos</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
 </header>
-
-
