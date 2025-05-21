@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('canciones.urls')),  # Página principal e index
     #path('usuarios/', include('users.urls')),  # Rutas de usuarios (login, perfil, etc.)
+
+    path('accounts/', include('allauth.urls')),
 ]
 
