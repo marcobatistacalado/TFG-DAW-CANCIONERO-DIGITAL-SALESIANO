@@ -27,53 +27,58 @@
     font-style: normal;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.main-bg-color{
+.main-bg-color {
     background-color: #d81e14;
 }
-.main-color{
+
+.main-color {
     color: #d81e14;
 }
 
-.width-logo{
+.width-logo {
     width: 120px;
 }
 
-h1,h2,h3,h4,h5{
+h1,
+h2,
+h3,
+h4,
+h5 {
     font-family: 'Playfair Display';
 }
 
-p{
+p {
     font-family: 'Raleway';
 }
 
-pre{
+pre {
     font-size: 1em !important;
 }
 
 /*Estilos del seatrch*/
-/* From Uiverse.io by ercnersoy */ 
-.i-search{
- border: none;
- padding: 1rem;
- border-radius: 1rem;
- background: #e8e8e8;
- box-shadow: 20px 20px 60px #c5c5c5,
-		-20px -20px 60px #ffffff;
- transition: 0.3s;
+/* From Uiverse.io by ercnersoy */
+.i-search {
+    border: none;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #e8e8e8;
+    box-shadow: 20px 20px 60px #c5c5c5,
+        -20px -20px 60px #ffffff;
+    transition: 0.3s;
 }
 
 .i-searh:focus {
- outline-color: #e8e8e8;
- background: #e8e8e8;
- box-shadow: inset 20px 20px 60px #c5c5c5,
-		inset -20px -20px 60px #ffffff;
- transition: 0.3s;
+    outline-color: #e8e8e8;
+    background: #e8e8e8;
+    box-shadow: inset 20px 20px 60px #c5c5c5,
+        inset -20px -20px 60px #ffffff;
+    transition: 0.3s;
 }
 
 /* Estilo para el contenedor del banner con la imagen de fondo */
@@ -85,7 +90,8 @@ pre{
 
 .imagen-banner {
     position: absolute;
-    filter: saturate(90%) brightness(80%); ;
+    filter: saturate(90%) brightness(80%);
+    ;
     top: 0;
     left: 0;
     z-index: -1;
@@ -99,18 +105,80 @@ pre{
     text-align: center;
 }
 
-.letra-movil{
-   max-height: 400px; /* o lo que prefieras */
+.letra-movil {
+    max-height: 400px;
+    /* o lo que prefieras */
     overflow-y: auto;
 }
 
-/*Tamaño aproximado de tablets...*/
-@media screen and (max-width: 912px) { 
-    .letra-movil{
-        text-align: center;
-    }
-    
+/* From Uiverse.io by vinodjangid07 */
+.Btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 140px;
+    /* Tamaño inicial */
+    height: 40px;
+    border: none;
+    padding: 0px 20px;
+    background-color: #6C5CE7;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0px rgba(108, 92, 231, 0.5);
+    transition: all 0.3s ease;
+    /* Transición para todo */
+}
+
+.Btn span {
+    transition: color 0.3s ease;
+}
+
+.svg {
+    width: 13px;
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    fill: white;
+    transition: right 0.3s ease;
+    /* Movimiento del ícono */
+}
+
+.Btn:hover {
+    width: 100px;
+    /* Nuevo tamaño de la caja */
+    background-color: #00B894;
+    /* Fondo cambia a verde neón cuando el mouse pasa */
+    box-shadow: 5px 5px 10px rgba(0, 184, 148, 0.5);
+    /* Sombra más intensa */
+}
+
+.Btn:hover span {
+    color: transparent;
+    /* Ocultar texto */
+}
+
+.Btn:hover .svg {
+    right: 43%;
+    /* Mover ícono */
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.Btn:active {
+    transform: translate(3px, 3px);
+    transition-duration: .3s;
+    box-shadow: 2px 2px 0px rgba(0, 184, 148, 0.5);
 }
 
 
+/*Tamaño aproximado de tablets...*/
+@media screen and (max-width: 912px) {
+    .letra-movil {
+        text-align: center;
+    }
 
+}
