@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h1 class="card-title mb-4 text-center">{% trans "Registro" %}</h1>
+
+          {% if not SOCIALACCOUNT_ONLY %}
+            <p class="text-center mb-4">
+              {% blocktranslate %}
+                ¿Ya tienes una cuenta? Por favor
+                <a href="{{ login_url }}">inicia sesión</a>.
+              {% endblocktranslate %}
+            </p>
+
+            <form method="post" action="{% url 'account_signup' %}">
+              {% csrf_token %}
+              {{ form|crispy }}
+              {{ redirect_field }}
+              <button type="submit" class="btn btn-danger w-100 mt-3">
+                {% trans "Registrarse" %}
+              </button>
+            </form>
+          {% endif %}
+
+          {% if PASSKEY_SIGNUP_ENABLED %}
+            <hr class="my-4">
+            <div class="d-grid gap-2">
+              <a href="{{ signup_by_passkey_url }}" class="btn btn-outline-primary">
+                {% trans "Regístrate usando una passkey" %}
+              </a>
+            </div>
+          {% endif %}
+
+          {% if SOCIALACCOUNT_ENABLED %}
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}

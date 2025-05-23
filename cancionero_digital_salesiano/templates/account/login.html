@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h1 class="card-title mb-4 text-center">{% trans "Iniciar sesión" %}</h1>
+
+          {% if not SOCIALACCOUNT_ONLY %}
+            <p class="text-center mb-4">
+              {% blocktranslate %}
+                Si aún no tienes una cuenta, por favor
+                <a href="{{ signup_url }}">regístrate</a> primero.
+              {% endblocktranslate %}
+            </p>
+
+            <form method="post" action="{% url 'account_login' %}">
+              {% csrf_token %}
+              {{ form|crispy }}
+              {{ redirect_field }}
+              <button type="submit" class="btn btn-danger w-100 mt-3">
+                {% trans "Iniciar sesión" %}
+              </button>
+            </form>
+          {% endif %}
+
+          {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+            <hr class="my-4">
+            <div class="d-grid gap-2">
+              {% if PASSKEY_LOGIN_ENABLED %}
+                <button type="submit" form="mfa_login" id="passkey_login" class="btn btn-outline-primary">
+                  {% trans "Iniciar sesión con passkey" %}
+                </button>
+              {% endif %}
+              {% if LOGIN_BY_CODE_ENABLED %}
+                <a href="{{ request_login_code_url }}" class="btn btn-outline-primary">
+                  {% trans "Envíame un código de inicio de sesión" %}
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if SOCIALACCOUNT_ENABLED %}
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}
