@@ -15,15 +15,19 @@
       <div class="dropdown ms-auto order-2 order-md-3">
         <a href="#" class="d-block text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
           aria-expanded="false">
-          <i class="bi bi-person-circle" style="font-size: 40px;"></i> </a>
+          <i class="bi bi-person-circle" style="font-size: 40px;"></i>
+        </a>
         <ul class="dropdown-menu dropdown-menu-end text-small">
-          <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
-          <li><a class="dropdown-item" href="#">Registrarse</a></li>
-          <li><a class="dropdown-item" href="#">Perfil</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+          {% if user.is_authenticated %}
+            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Cerrar sesión</a></li>
+          {% else %}
+            <li><a class="dropdown-item" href="{% url 'account_login' %}">Iniciar Sesión</a></li>
+            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Registrarse</a></li>
+          {% endif %}
         </ul>
       </div>
 

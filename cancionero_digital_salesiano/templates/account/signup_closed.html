@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load allauth %}
+
+{% block head_title %}
+  {% trans "Sign Up Closed" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+
+      <div class="card shadow-sm text-center">
+        <div class="card-body p-4">
+          {% element h1 %}
+            {% trans "Sign Up Closed" %}
+          {% endelement %}
+          {% element p %}
+            {% trans "We are sorry, but the sign up is currently closed." %}
+          {% endelement %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}
