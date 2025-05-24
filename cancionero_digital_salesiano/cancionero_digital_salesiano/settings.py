@@ -182,12 +182,13 @@ ACCOUNT_SIGNUP_REDIRECT_URL = "/"             # Redirige después del registro
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"             # Redirige después del logout
 ACCOUNT_LOGIN_REDIRECT_URL = "/"              # Redirige después del login
 
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"  # Se puede iniciar sesión con nombre de usuario o email
-ACCOUNT_EMAIL_REQUIRED = True                     # Email obligatorio
+ACCOUNT_LOGIN_METHODS = {"username", "email"}     # Permite login por username o email
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]  # Campos requeridos para registro
 ACCOUNT_UNIQUE_EMAIL = True                       # No se permiten dos cuentas con el mismo email
 
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5                  # Límite de intentos de login
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300              # Tiempo de espera (segundos) después de superar el límite
+ACCOUNT_RATE_LIMITS = {
+    "login_failed": "5/5m",  # Máximo 5 intentos fallidos cada 5 minutos
+}
 
 ACCOUNT_SESSION_REMEMBER = True                   # Mantiene la sesión iniciada
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True               # Confirmación automática al hacer clic en el link del email

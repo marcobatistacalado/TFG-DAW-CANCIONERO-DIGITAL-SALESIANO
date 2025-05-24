@@ -1,21 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import User  # <-- Importa el modelo User de Django
 
-# Create your models here.
-from django.db import models
-
-class Usuario(models.Model):
-    id_usuario = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
+# ⚠️ Ya no defines el modelo Usuario
 
 class ConfiguracionUsuario(models.Model):
-    id_usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    id_usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)  # ← Cambio aquí
     modo_oscuro = models.BooleanField(default=False)
     ultima_tonalidad = models.CharField(max_length=100, blank=True, null=True)
 
 class ListaPersonal(models.Model):
     id_lista = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # ← Cambio aquí
     nombre_lista = models.CharField(max_length=255)
 
 class Cancion(models.Model):
@@ -32,7 +27,7 @@ class ListaCancion(models.Model):
     cancion = models.ForeignKey(Cancion, on_delete=models.CASCADE)
 
 class Favorito(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # ← Cambio aquí
     cancion = models.ForeignKey(Cancion, on_delete=models.CASCADE)
 
 class LineaCancion(models.Model):
