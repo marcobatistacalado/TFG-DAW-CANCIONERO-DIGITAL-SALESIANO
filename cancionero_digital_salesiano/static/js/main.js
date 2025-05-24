@@ -1,38 +1,44 @@
 console.log("📦 main.js cargado correctamente");
 
 document.addEventListener("DOMContentLoaded", function () {
-    // === Elementos del DOM ===
+    // ============================
+    // 🎯 ELEMENTOS DEL DOM
+    // ============================
+    // Capturamos los elementos del DOM que vamos a usar
     const searchInput = document.getElementById("search-input");
     const searchForm = document.getElementById("search-form");
     const songListContainer = document.getElementById("song-list");
     const searchTitle = document.getElementById("search-title");
     const defaultTitle = searchTitle ? searchTitle.dataset.defaultTitle : "";
 
-    const btnUp = document.getElementById("btn-up");
-    const btnDown = document.getElementById("btn-down");
-    const letraDiv = document.querySelector(".letra-movil");
+    const btnUp = document.getElementById("btn-up"); // Botón subir tono
+    const btnDown = document.getElementById("btn-down"); // Botón bajar tono
+    const letraDiv = document.querySelector(".letra-movil"); // Contenedor de la letra
 
-    //=== Funcion de hacer zooom ===
-    const aumentarBtn = document.getElementById("btn-zoom-in");
-    const reducirBtn = document.getElementById("btn-zoom-out");
-    const letraContenedor = document.querySelector(".letra-movil");
+    const aumentarBtn = document.getElementById("btn-zoom-in"); // Botón para aumentar zoom
+    const reducirBtn = document.getElementById("btn-zoom-out"); // Botón para reducir zoom
+    const letraContenedor = document.querySelector(".letra-movil"); // Contenedor que tendrá el tamaño de letra modificado
 
-    // === Botón para mostrar solo letra ===
-    const soloLetraBtn = document.getElementById("btn-solo-letra");
+    const soloLetraBtn = document.getElementById("btn-solo-letra"); // Botón para mostrar solo letra sin acordes
     console.log("Botón soloLetraBtn:", soloLetraBtn);
 
-    // === 🔍 FUNCIONALIDAD DE BÚSQUEDA EN VIVO ===
+    // ============================
+    // 🔍 BÚSQUEDA EN VIVO (AJAX)
+    // ============================
+    // Cuando hay un formulario y un input, activamos búsqueda en vivo
     if (searchForm && searchInput && songListContainer) {
-        // Evita que el formulario recargue la página al hacer submit
+        // Evita que el formulario se envíe tradicionalmente (recarga)
         searchForm.addEventListener("submit", function (e) {
             e.preventDefault();
         });
 
-        // Al escribir en el input, hacer una búsqueda AJAX si hay 3+ caracteres o está vacío
+        // Escuchamos cuando el usuario escribe en el input de búsqueda
         searchInput.addEventListener("input", function () {
             const query = this.value.trim();
 
+            // Solo buscar si el texto tiene 3+ caracteres o si está vacío (para resetear)
             if (query.length >= 3 || query.length === 0) {
+                // Petición AJAX para buscar canciones en backend
                 fetch(`/search/?q=${encodeURIComponent(query)}`, {
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
@@ -40,28 +46,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                     .then((response) => response.json())
                     .then((data) => {
+                        // Actualizamos el listado de canciones con la respuesta HTML recibida
                         songListContainer.innerHTML = data.html;
 
-                        // Cambiar el título dinámicamente según la búsqueda
+                        // Cambiamos el título para reflejar que se está buscando
                         if (searchTitle) {
                             searchTitle.textContent =
                                 query.length >= 3 ? `Buscando: ${query}` : defaultTitle;
                         }
-
-                        // Si cambia el listado de canciones, puede que haya que reactivar otras funciones JS
                     })
                     .catch((err) => console.error("Error en búsqueda AJAX:", err));
             }
         });
     }
 
-    // === 🎵 FUNCIONALIDAD DE TRANSPOSICIÓN DE ACORDES ===
+    // ============================
+    // 🎵 TRANSPOSICIÓN DE ACORDES
+    // ============================
+    // Permite subir o bajar el tono de la canción
     if (btnUp && btnDown && letraDiv) {
-        let transpose = 0;
+        let transpose = 0; // Valor actual de transposición
 
+        // Función para pedir al backend la letra transpuesta según valor actual
         function updateSongTone() {
             const url = new URL(window.location.href);
-            url.searchParams.set("transpose", transpose); // Actualiza el parámetro en la URL
+            url.searchParams.set("transpose", transpose); // Actualizamos parámetro transpose en URL
 
             fetch(url, {
                 headers: {
@@ -70,32 +79,36 @@ document.addEventListener("DOMContentLoaded", function () {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    letraDiv.innerHTML = data.html; // Reemplaza el HTML con los acordes transpuestos
+                    // Reemplazamos el HTML de la letra con la versión transpuesta
+                    letraDiv.innerHTML = data.html;
                 })
                 .catch((err) => console.error("Error al transponer:", err));
         }
 
-        // Botón para subir tono
+        // Al hacer clic en subir tono, aumentamos la transposición y actualizamos la letra
         btnUp.addEventListener("click", () => {
             transpose += 1;
             updateSongTone();
         });
 
-        // Botón para bajar tono
+        // Al hacer clic en bajar tono, disminuimos la transposición y actualizamos la letra
         btnDown.addEventListener("click", () => {
             transpose -= 1;
             updateSongTone();
         });
     }
 
-    // === Funcion de zoom o deszoom ===
-    const maxFontSize = 30;
-    const minFontSize = 10;
-    let fontSize; //= localStorage.getItem('fontSize'); Ver por que por defecto me pone un tamñao 32??
-    fontSize = fontSize ? parseInt(fontSize) : 16;
+    // ============================
+    // 🔍 ZOOM DE LETRA
+    // ============================
+    // Controlamos el tamaño de fuente de la letra para aumentar o reducir zoom
+    const maxFontSize = 30; // Tamaño máximo permitido
+    const minFontSize = 10; // Tamaño mínimo permitido
+    let fontSize = localStorage.getItem("fontSize"); // Intentamos recuperar tamaño guardado
+    fontSize = fontSize ? parseInt(fontSize) : 16; // Si no hay, tamaño por defecto 16px
     letraContenedor.style.fontSize = fontSize + "px";
 
-    // Función para actualizar botones
+    // Función para habilitar o deshabilitar botones según el tamaño actual
     function actualizarBotones() {
         if (fontSize >= maxFontSize) {
             aumentarBtn.setAttribute("disabled", "true");
@@ -109,10 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
             reducirBtn.removeAttribute("disabled");
         }
     }
-
-    // Llamar al inicio para reflejar el estado actual
     actualizarBotones();
 
+    // Evento para aumentar tamaño de letra y guardar preferencia
     aumentarBtn.addEventListener("click", function () {
         if (fontSize < maxFontSize) {
             fontSize += 2;
@@ -122,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Evento para reducir tamaño de letra y guardar preferencia
     reducirBtn.addEventListener("click", function () {
         if (fontSize > minFontSize) {
             fontSize -= 2;
@@ -131,68 +144,73 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // === Funcion de solo letra ===
-    let acordesVisibles = true; // Estado inicial
+    // ============================
+    // 🎸 BOTÓN SOLO LETRA (TOGGLE ACORDES)
+    // ============================
+    // Permite ocultar o mostrar los acordes de la canción
+    let acordesVisibles = true; // Estado inicial: acordes visibles
 
     if (soloLetraBtn) {
         soloLetraBtn.addEventListener("click", function () {
-            acordesVisibles = !acordesVisibles;
+            acordesVisibles = !acordesVisibles; // Cambiar estado
             console.log("Estado de acordes visibles:", acordesVisibles);
 
-            if (acordesVisibles) {
-                // Mostrar acordes
-                document.querySelectorAll(".acordes").forEach((el) => {
-                    el.style.display = "block";
-                });
-                soloLetraBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>Solo letra`;
-            } else {
-                // Ocultar acordes
-                document.querySelectorAll(".acordes").forEach((el) => {
-                    el.style.display = "none";
-                });
-                soloLetraBtn.innerHTML = `<i class="bi bi-plus-circle"></i> Añadir acordes`;
-            }
+            // Mostrar u ocultar elementos con clase .acordes según estado
+            document.querySelectorAll(".acordes").forEach((el) => {
+                el.style.display = acordesVisibles ? "block" : "none";
+            });
+
+            // Cambiar texto e icono del botón según el estado
+            soloLetraBtn.innerHTML = acordesVisibles
+                ? `<i class="bi bi-file-earmark-font icono"></i>Solo letra`
+                : `<i class="bi bi-plus-circle"></i> Añadir acordes`;
         });
     }
 
-
-    // === 🚀 Auto Scroll ===
+    // ============================
+    // 🚀 AUTO SCROLL DE LETRA
+    // ============================
+    // Permite hacer scroll automático en la letra a una velocidad ajustable
     const scrollBtn = document.getElementById("btn-scroll");
     let scrollInterval = null;
     let isScrolling = false;
-    let velocidad = 1; // Velocidad inicial
+    let velocidad = 1; // Velocidad inicial del scroll
     const velocidadDisplay = document.getElementById("velocidad-actual");
 
-    //Si pulamnos los botones de velocidad
+    // Botones para aumentar o disminuir la velocidad de scroll
     const plusBtn = document.getElementById("btn-pls-speed");
     const minusBtn = document.getElementById("btn-mn-speed");
+
+    // Aumentar velocidad si no se pasa del máximo (10)
     if (plusBtn) {
         plusBtn.addEventListener("click", () => {
-            if (velocidad < 10) { // Limitar la velocidad máxima
-                velocidad += 1;
+            if (velocidad < 10) {
+                velocidad++;
                 actualizarVelocidadDisplay();
                 console.log("Velocidad aumentada a:", velocidad);
             }
         });
     }
+
+    // Disminuir velocidad si no se pasa del mínimo (1)
     if (minusBtn) {
         minusBtn.addEventListener("click", () => {
             if (velocidad > 1) {
-                velocidad -= 1;
-                actualizarVelocidadDisplay()
+                velocidad--;
+                actualizarVelocidadDisplay();
                 console.log("Velocidad disminuida a:", velocidad);
             }
         });
     }
 
-    //velocidades
+    // Actualiza el texto que muestra la velocidad actual
     function actualizarVelocidadDisplay() {
         if (velocidadDisplay) {
             velocidadDisplay.textContent = velocidad;
         }
     }
 
-
+    // Lógica para iniciar/detener el scroll automático al pulsar el botón
     if (scrollBtn && letraContenedor) {
         scrollBtn.addEventListener("click", () => {
             if (!isScrolling) {
@@ -200,13 +218,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 isScrolling = true;
 
                 scrollInterval = setInterval(() => {
-                    // Desplazamos el contenedor hacia abajo
+                    // Scroll suave hacia abajo
                     letraContenedor.scrollBy({
-                        top: velocidad, // puedes ajustar la velocidad aquí
-                        behavior: "smooth"// Como queremos que sea a la hora de hacer scroll, auto lo hace muy tosco y dificil de leer
+                        top: velocidad,
+                        behavior: "smooth",
                     });
 
-                    // Si llegó al final, detenemos el scroll
+                    // Si llegamos al final del contenido, paramos el scroll automático
                     if (
                         letraContenedor.scrollTop + letraContenedor.clientHeight >=
                         letraContenedor.scrollHeight
@@ -215,13 +233,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         isScrolling = false;
                         scrollBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>scroll`;
                     }
-                }, 50); // cada 50ms, ajusta para hacerlo más lento o rápido
+                }, 50); // Intervalo de tiempo entre cada desplazamiento (ms)
             } else {
+                // Si ya está en scroll, detenerlo al pulsar el botón
                 clearInterval(scrollInterval);
                 isScrolling = false;
                 scrollBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>scroll`;
             }
         });
     }
-
 });
