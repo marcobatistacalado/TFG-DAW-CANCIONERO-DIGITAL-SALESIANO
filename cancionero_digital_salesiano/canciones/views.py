@@ -4,6 +4,7 @@ from .models import Cancion, TiempoLiturgico
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 import re
+from django.contrib.auth.decorators import login_required
 
 # ============================
 # 🗓 CÁLCULOS DE FECHAS Y TIEMPOS LITÚRGICOS
@@ -241,3 +242,8 @@ def search(request):
         'canciones': canciones,
         'busqueda': query,
     })
+
+
+@login_required
+def profile(request):
+    return render(request, 'account/profile.html')

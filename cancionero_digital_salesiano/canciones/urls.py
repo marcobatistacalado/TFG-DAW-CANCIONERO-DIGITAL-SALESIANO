@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import profile
 
 urlpatterns = [
     # Página de inicio – muestra canciones del tiempo litúrgico
@@ -13,4 +14,6 @@ urlpatterns = [
 
     # Buscador  (http://…/search/?q=…)
     path('search/', views.search, name='search'),
+
+    path('profile/', profile, name='account_profile'),
 ]

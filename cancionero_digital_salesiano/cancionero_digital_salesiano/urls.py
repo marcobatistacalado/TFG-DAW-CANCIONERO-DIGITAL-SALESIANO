@@ -28,4 +28,5 @@ urlpatterns = [
 
     # Todas las rutas que empiecen por /accounts/ las gestiona django-allauth
     path('accounts/', include('allauth.urls')),
+    
 ]

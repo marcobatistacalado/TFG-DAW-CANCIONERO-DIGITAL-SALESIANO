@@ -178,9 +178,10 @@ if DEBUG:
 # ============================
 
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True  # Redirige automáticamente al home después de login
-ACCOUNT_SIGNUP_REDIRECT_URL = "/"             # Redirige después del registro
-ACCOUNT_LOGOUT_REDIRECT_URL = "/"             # Redirige después del logout
-ACCOUNT_LOGIN_REDIRECT_URL = "/"              # Redirige después del login
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+SIGNUP_REDIRECT_URL = '/'
 
 ACCOUNT_LOGIN_METHODS = {"username", "email"}     # Permite login por username o email
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]  # Campos requeridos para registro
