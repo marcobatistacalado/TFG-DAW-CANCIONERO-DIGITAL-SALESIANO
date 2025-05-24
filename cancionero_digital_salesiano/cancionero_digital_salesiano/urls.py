@@ -16,13 +16,16 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include   # include = “reenvía” a otro urls.py
 
 urlpatterns = [
+    # Ruta al panel de administración de Django
     path('admin/', admin.site.urls),
-    path('', include('canciones.urls')),  # Página principal e index
-    #path('usuarios/', include('users.urls')),  # Rutas de usuarios (login, perfil, etc.)
 
+    # Raíz del sitio  ➜  reenvía a las URLs de la app “canciones”
+    #    - «include('canciones.urls')» carga cancionero_digital_salesiano/canciones/urls.py
+    path('', include('canciones.urls')),
+
+    # Todas las rutas que empiecen por /accounts/ las gestiona django-allauth
     path('accounts/', include('allauth.urls')),
 ]
-
