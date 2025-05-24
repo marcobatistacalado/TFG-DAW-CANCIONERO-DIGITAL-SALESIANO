@@ -1,51 +1,60 @@
-{% extends "account/base_manage_phone.html" %}
-{% load i18n %}
-{% load allauth %}
-{% block head_title %}
-    {% trans "Change Phone" %}
-{% endblock head_title %}
+{% extends "base.html" %}
+{% load i18n allauth %}
+
+{% block title %}{% trans "Cambiar teléfono" %}{% endblock %}
+
 {% block content %}
-    {% element h1 %}
-        {% trans "Change Phone" %}
-    {% endelement %}
-    {% url 'account_change_phone' as action_url %}
-    {% element form method="post" action=action_url %}
-        {% slot body %}
-            {% csrf_token %}
-            {% if phone %}
-                {% element field id="current_phone" disabled=True type="tel" value=phone %}
-                    {% slot label %}
-                        {% translate "Current phone" %}:
-                    {% endslot %}
-                    {% if not phone_verified %}
-                        {% slot help_text %}
-                            {% blocktranslate %}Your phone number is still pending verification.{% endblocktranslate %}
-                            {% element button form="verify-phone" type="submit" tags="minor,secondary" %}
-                                {% trans 'Re-send Verification' %}
-                            {% endelement %}
-                        {% endslot %}
-                    {% endif %}
-                {% endelement %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+
+      <div class="card shadow-sm p-4">
+        <h1 class="mb-4 text-center">{% trans "Cambiar teléfono" %}</h1>
+
+        {% url 'account_change_phone' as action_url %}
+        <form method="post" action="{{ action_url }}">
+          {% csrf_token %}
+          
+          {% if phone %}
+            <div class="mb-3">
+              <label for="current_phone" class="form-label">{% trans "Teléfono actual" %}:</label>
+              <input type="tel" class="form-control" id="current_phone" value="{{ phone }}" disabled>
+              {% if not phone_verified %}
+                <div class="form-text">
+                  {% trans "Tu número de teléfono está pendiente de verificación." %}
+                  <button form="verify-phone" type="submit" class="btn btn-sm btn-secondary ms-2">
+                    {% trans "Reenviar verificación" %}
+                  </button>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label for="{{ form.phone.id_for_label }}" class="form-label">{% trans "Cambiar a" %}:</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+              <div class="invalid-feedback d-block">
+                {{ form.phone.errors }}
+              </div>
             {% endif %}
-            {% element field id=form.phone.auto_id name="phone" value=form.phone.value errors=form.phone.errors type="tel" %}
-                {% slot label %}
-                    {% translate "Change to" %}:
-                {% endslot %}
-            {% endelement %}
-        {% endslot %}
-        {% slot actions %}
-            {% element button name="action_add" type="submit" %}
-                {% trans "Change Phone" %}
-            {% endelement %}
-        {% endslot %}
-    {% endelement %}
-    {% if not phone_verified %}
-        <form style="display: none"
-              id="verify-phone"
-              method="post"
-              action="{{ action_url }}">
+          </div>
+
+          <button type="submit" name="action_add" class="btn btn-danger w-100">
+            {% trans "Cambiar teléfono" %}
+          </button>
+        </form>
+
+        {% if not phone_verified %}
+          <form id="verify-phone" method="post" action="{{ action_url }}" style="display: none;">
             {% csrf_token %}
             <input type="hidden" name="action" value="verify">
-        </form>
-    {% endif %}
-{% endblock content %}
+          </form>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

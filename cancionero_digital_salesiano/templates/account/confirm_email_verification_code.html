@@ -24,9 +24,8 @@
     {% translate "Use a different email address" %}
 {% endblock %}
 
-{# Botón de confirmación en rojo #}
 {% block submit_button %}
-    {% element button type="submit" tags="danger,confirm,{{ extra_tags }}" %}
+    <button type="submit" class="btn btn-danger w-100">
         {% translate "Confirm" %}
-    {% endelement %}
+    </button>
 {% endblock %}

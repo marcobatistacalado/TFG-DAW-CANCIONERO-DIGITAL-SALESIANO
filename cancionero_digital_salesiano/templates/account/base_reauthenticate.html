@@ -1,35 +1,43 @@
-{% extends "account/base_entrance.html" %}
+{% extends "base.html" %}
 {% load allauth %}
 {% load i18n %}
 
 {% block head_title %}
-    {% trans "Confirm Access" %}
+    {% trans "Confirmar acceso" %}
 {% endblock head_title %}
 
 {% block content %}
-    {% element h1 %}
-        {% trans "Confirm Access" %}
-    {% endelement %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
 
-    {% element p %}
-        {% blocktranslate %}Please reauthenticate to safeguard your account.{% endblocktranslate %}
-    {% endelement %}
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
 
-    {% block reauthenticate_content %}{% endblock %}
+          <h1 class="card-title mb-4 text-center">{% trans "Confirmar acceso" %}</h1>
 
-    {% if reauthentication_alternatives %}
-        {% element hr %}{% endelement %}
+          <p class="mb-4 text-center">
+            {% blocktranslate %}Por favor, vuelve a autenticarte para proteger tu cuenta.{% endblocktranslate %}
+          </p>
 
-        {% element h2 %}
-            {% translate "Alternative options" %}
-        {% endelement %}
+          {% block reauthenticate_content %}{% endblock %}
 
-        {% element button_group %}
-            {% for alt in reauthentication_alternatives %}
-                {% element button href=alt.url tags="danger,outline" %}
-                    {{ alt.description }}
-                {% endelement %}
-            {% endfor %}
-        {% endelement %}
-    {% endif %}
+          {% if reauthentication_alternatives %}
+            <hr class="my-4">
+            <h2 class="h5 mb-3 text-center">{% translate "Opciones alternativas" %}</h2>
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+              {% for alt in reauthentication_alternatives %}
+                <a href="{{ alt.url }}" class="btn btn-outline-danger">
+                  {{ alt.description }}
+                </a>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock content %}

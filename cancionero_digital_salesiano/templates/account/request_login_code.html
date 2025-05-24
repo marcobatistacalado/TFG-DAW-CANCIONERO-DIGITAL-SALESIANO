@@ -1,32 +1,40 @@
-{% extends "account/base_entrance.html" %}
-{% load i18n %}
-{% load allauth account %}
+{% extends "base.html" %}
+{% load i18n allauth account %}
+
 {% block head_title %}
     {% translate "Sign In" %}
 {% endblock head_title %}
+
 {% block content %}
-    {% element h1 %}
-        {% translate "Send me a sign-in code" %}
-    {% endelement %}
-    {% element p %}
-        {% blocktranslate %}You will receive a special code for a password-free sign-in.{% endblocktranslate %}
-    {% endelement %}
-    {% url 'account_request_login_code' as login_url %}
-    {% element form form=form method="post" action=login_url tags="entrance,login" %}
-        {% slot body %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h1 class="card-title mb-4 text-center">{% translate "Send me a sign-in code" %}</h1>
+          <p class="mb-4 text-center">
+            {% blocktranslate %}You will receive a special code for a password-free sign-in.{% endblocktranslate %}
+          </p>
+
+          <form method="post" action="{% url 'account_request_login_code' %}">
             {% csrf_token %}
-            {% element fields form=form unlabeled=True %}
-            {% endelement %}
+            {{ form|crispy }}
             {{ redirect_field }}
-        {% endslot %}
-        {% slot actions %}
-            {% element button type="submit" tags="prominent,login" %}
-                {% translate "Request Code" %}
-            {% endelement %}
-        {% endslot %}
-    {% endelement %}
-    {% url 'account_login' as login_url %}
-    {% element button href=login_url tags="link" %}
-        {% translate "Other sign-in options" %}
-    {% endelement %}
+            <button type="submit" class="btn btn-danger w-100 mt-3">
+              {% translate "Request Code" %}
+            </button>
+          </form>
+
+          <div class="mt-3 text-center">
+            <a href="{% url 'account_login' %}" class="btn btn-link">
+              {% translate "Other sign-in options" %}
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock content %}
