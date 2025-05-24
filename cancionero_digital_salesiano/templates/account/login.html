@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% load socialaccount %}
 
 {% block content %}
 <div class="container py-5">
@@ -45,9 +46,15 @@
             </div>
           {% endif %}
 
-          {% if SOCIALACCOUNT_ENABLED %}
-            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-          {% endif %}
+          <hr class="my-4">
+          <p class="text-center text-muted">{% trans "O inicia sesión con:" %}</p>
+
+          <div class="d-grid gap-2">
+            <a href="{% provider_login_url 'google' process='login' %}" class="btn btn-outline-danger">
+              <i class="fab fa-google me-2"></i> Iniciar sesión con Google
+            </a>
+          </div>
+
         </div>
       </div>
 

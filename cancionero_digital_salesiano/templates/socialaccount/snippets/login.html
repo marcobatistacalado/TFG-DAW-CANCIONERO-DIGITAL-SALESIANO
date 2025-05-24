@@ -1,15 +1,20 @@
 {% load i18n %}
-{% load allauth %}
 {% load socialaccount %}
 {% get_providers as socialaccount_providers %}
+
 {% if socialaccount_providers %}
-    {% if not SOCIALACCOUNT_ONLY %}
-        {% element hr %}
-        {% endelement %}
-        {% element h2 %}
-            {% translate "Or use a third-party" %}
-        {% endelement %}
-    {% endif %}
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-    {% include "socialaccount/snippets/login_extra.html" %}
+  {% if not SOCIALACCOUNT_ONLY %}
+    <hr class="my-4">
+    <p class="text-center text-muted">{% translate "O inicia sesión con:" %}</p>
+  {% endif %}
+
+  <div class="d-flex flex-column gap-2 mt-3">
+    {% for provider in socialaccount_providers %}
+      <a href="{% provider_login_url provider.id process=process %}" class="btn btn-outline-{{ provider.id|lower }}">
+        <i class="fab fa-{{ provider.id|lower }} me-2"></i> {% blocktrans %}Iniciar sesión con {{ provider.name }}{% endblocktrans %}
+      </a>
+    {% endfor %}
+  </div>
+
+  {% include "socialaccount/snippets/login_extra.html" %}
 {% endif %}
