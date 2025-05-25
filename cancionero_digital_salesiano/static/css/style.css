@@ -104,6 +104,71 @@ pre{
     overflow-y: auto;
 }
 
+/*Diseño de botonces en cancion*/
+.Btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 140px;
+    /* Tamaño inicial */
+    height: 40px;
+    border: none;
+    padding: 0px 20px;
+    background-color: #6C5CE7;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0px rgba(108, 92, 231, 0.5);
+    transition: all 0.3s ease;
+    /* Transición para todo */
+}
+
+.Btn span {
+    transition: color 0.3s ease;
+}
+
+.svg {
+    width: 13px;
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    fill: white;
+    transition: right 0.3s ease;
+    /* Movimiento del ícono */
+}
+
+.Btn:hover {
+    width: 100px;
+    /* Nuevo tamaño de la caja */
+    background-color: #00B894;
+    /* Fondo cambia a verde neón cuando el mouse pasa */
+    box-shadow: 5px 5px 10px rgba(0, 184, 148, 0.5);
+    /* Sombra más intensa */
+}
+
+.Btn:hover span {
+    color: transparent;
+    /* Ocultar texto */
+}
+
+.Btn:hover .svg {
+    right: 43%;
+    /* Mover ícono */
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.Btn:active {
+    transform: translate(3px, 3px);
+    transition-duration: .3s;
+    box-shadow: 2px 2px 0px rgba(0, 184, 148, 0.5);
+}
+/*Fin de diseño*/
+
+
 /*Tamaño aproximado de tablets...*/
 @media screen and (max-width: 912px) { 
     .letra-movil{

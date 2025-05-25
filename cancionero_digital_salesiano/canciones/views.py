@@ -104,12 +104,18 @@ def index(request):
     })
 
 def canciones_complete(request):
-    """
-    Vista que muestra todas las canciones sin filtrar ni limitar.
-    """
-    canciones = Cancion.objects.all()
-    return render(request, 'canciones/index.html', {
-        'canciones': canciones,
+    tiempos = TiempoLiturgico.objects.all()  # Todos los tiempos litúrgicos disponibles
+
+    canciones_por_tiempo = {}  # Diccionario para almacenar canciones agrupadas
+
+    for tiempo in tiempos:
+        canciones_por_tiempo[tiempo.nombre_tiempo] = Cancion.objects.filter(id_tiempo=tiempo.id_tiempo)
+
+
+
+    return render(request, 'canciones/toggleCanciones.html', {
+        'canciones_por_tiempo': canciones_por_tiempo,
+        'tiempos': tiempos,
     })
 
 # ============================
