@@ -82,6 +82,25 @@
                             <span>Velocidad:</span>
                             <span id="velocidad-actual">1</span>
                         </div>
+
+
+                        {% if user.is_authenticated %}
+                        <script>
+                            window.toggleFavoritoUrl = "{% url 'toggle_favorito' %}";
+                            window.csrfToken = "{{ csrf_token }}";
+                        </script>
+                        <button type="button" class="btn btn-danger d-flex gap-2" id="btn-favorito"
+                            data-cancion-id="{{ cancion.id_cancion }}">
+                            {% if favorito %}
+                            <i class="bi bi-heart-fill"></i> Quitar de Favoritos
+                            {% else %}
+                            <i class="bi bi-heart"></i> Añadir a Favoritos
+                            {% endif %}
+                        </button>
+                        {% endif %}
+
+
+
                     </div>
                 </div>
             </div>

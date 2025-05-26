@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Mis canciones favoritas</h1>
+
+{% if canciones %}
+<ul>
+    {% for cancion in canciones %}
+    <div class="col-12 col-sm-12 col-md-12 col-lg-3 cancion">
+    <div class="card h-100">
+
+            <a href="{% url 'detalle_cancion' cancion.id_cancion%}" class="btn btn-danger w-100 text-truncate"
+                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ cancion.titulo }}
+            </a>
+    </div>
+</div>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No tienes canciones favoritas guardadas.</p>
+{% endif %}
+{% endblock %}
