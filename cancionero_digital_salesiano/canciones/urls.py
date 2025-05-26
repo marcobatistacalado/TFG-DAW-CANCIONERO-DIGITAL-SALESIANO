@@ -16,4 +16,9 @@ urlpatterns = [
     path('search/', views.search, name='search'),
 
     path('profile/', profile, name='account_profile'),
+
+    path('toggle_favorito/', views.toggle_favorito, name='toggle_favorito'),
+    
+     path('favoritos/', views.favoritos, name='favoritos'),
+
 ]
