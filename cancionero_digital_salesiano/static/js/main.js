@@ -243,4 +243,34 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    const btnFavorito = document.getElementById('btn-favorito');
+
+    if (btnFavorito) {
+        btnFavorito.addEventListener('click', function () {
+            const cancionId = this.dataset.cancionId;
+            fetch(window.toggleFavoritoUrl, {  // usa la variable global definida en el template
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': window.csrfToken  // token también desde la variable global
+                },
+                body: new URLSearchParams({
+                    'cancion_id': cancionId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'agregado') {
+                        btnFavorito.innerHTML = '<i class="bi bi-heart-fill"></i> Quitar de Favoritos';
+                    } else if (data.status === 'eliminado') {
+                        btnFavorito.innerHTML = '<i class="bi bi-heart"></i> Añadir a Favoritos';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    }
+
+
 });

@@ -13,25 +13,25 @@
       </h1>
 
       <div class="dropdown ms-auto order-2 order-md-3">
-        <a href="#" class="d-block text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          <i class="bi bi-person-circle" style="font-size: 40px;"></i>
+        <a href="#" class="d-block text-white text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle" style="font-size: 40px;"></i> <!-- Icono del usuario -->
         </a>
         <ul class="dropdown-menu dropdown-menu-end text-small">
           {% if user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'account_profile' %}">Perfil</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Cerrar sesión</a></li>
+          <li><a class="dropdown-item" href="{% url 'account_profile' %}">Perfil</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="{% url 'account_logout' %}">Cerrar sesión</a></li>
           {% else %}
-            <li><a class="dropdown-item" href="{% url 'account_login' %}">Iniciar Sesión</a></li>
-            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Registrarse</a></li>
+          <li><a class="dropdown-item" href="{% url 'account_login' %}">Iniciar Sesión</a></li>
+          <li><a class="dropdown-item" href="{% url 'account_signup' %}">Registrarse</a></li>
           {% endif %}
         </ul>
       </div>
 
-      <button class="navbar-toggler d-md-none border-0 ms-2 order-0" type="button" data-bs-toggle="collapse" 
+
+      <button class="navbar-toggler d-md-none border-0 ms-2 order-0" type="button" data-bs-toggle="collapse"
         data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -52,7 +52,7 @@
             <a class="nav-link text-white px-3" href="#">Listas</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white px-3" href="#">Favoritos</a>
+            <a class="nav-link text-white px-3" href="{% url 'favoritos' %}">Favoritos</a>
           </li>
         </ul>
       </div>

@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from datetime import date, timedelta
-from .models import Cancion, TiempoLiturgico
+from .models import Cancion, Favorito, TiempoLiturgico
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 import re
@@ -111,13 +111,20 @@ def canciones_complete(request):
     for tiempo in tiempos:
         canciones_por_tiempo[tiempo.nombre_tiempo] = Cancion.objects.filter(id_tiempo=tiempo.id_tiempo)
 
-
-
     return render(request, 'canciones/toggleCanciones.html', {
         'canciones_por_tiempo': canciones_por_tiempo,
         'tiempos': tiempos,
     })
 
+
+'''
+@login_required
+def lista_favoritos(request):
+    # Obtener las canciones favoritas del usuario
+    favoritos = Favorito.objects.filter(usuario=request.user).select_related('cancion')
+    canciones_favoritas = [f.favorito for f in favoritos]  # Obtener solo las canciones, no los objetos Favorito completos
+    return render(request, 'favoritos/lista_favoritos.html', {'canciones': canciones_favoritas})
+'''
 # ============================
 # 🎸 FUNCIONES DE TRANSPOSE DE ACORDES
 # ============================
@@ -254,6 +261,7 @@ def search(request):
 def profile(request):
     return render(request, 'account/profile.html')
 
+
 #POLITICAS
 def politica_privacidad(request):
     return render(request, 'canciones/info_pagina.html', {
@@ -337,3 +345,35 @@ def terminos_condiciones(request):
         Este texto forma parte de una simulación legal para un Trabajo de Fin de Grado.
         '''
     })
+
+@login_required
+def toggle_favorito(request):
+    if request.method == 'POST':
+        cancion_id = request.POST.get('cancion_id')
+        cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
+
+        favorito = Favorito.objects.filter(usuario=request.user, cancion=cancion).first()
+
+        if favorito:
+            favorito.delete()
+            return JsonResponse({'status': 'eliminado'})
+        else:
+            Favorito.objects.create(usuario=request.user, cancion=cancion)
+            return JsonResponse({'status': 'agregado'})
+    
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+
+def favoritos(request):
+
+    # Obtener todas las canciones favoritas del usuario actual
+    favoritos_usuario = Favorito.objects.filter(usuario=request.user).select_related('cancion')
+
+    # Extraer solo las canciones de los favoritos
+    canciones = [fav.cancion for fav in favoritos_usuario]
+
+    return render(request, 'canciones/favoritos.html', {
+        'canciones': canciones,
+    })
+

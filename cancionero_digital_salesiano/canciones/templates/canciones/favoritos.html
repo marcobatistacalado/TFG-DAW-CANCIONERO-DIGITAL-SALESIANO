@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 id="search-title" class="text-danger fw-bold text-center mb-4"
+    data-default-title="Tiempo Litúrgico: {{ tiempo_actual.nombre_tiempo }}">
+    Mis Canciones Favoritas
+</h2>
+
+{% if canciones %}
+<div class="row g-3" id="song-list">
+    {% include 'canciones/canciones_list.html'%}
+    
+</div>
+{% else %}
+<p>No tienes canciones favoritas guardadas.</p>
+{% endif %}
+{% endblock %}
