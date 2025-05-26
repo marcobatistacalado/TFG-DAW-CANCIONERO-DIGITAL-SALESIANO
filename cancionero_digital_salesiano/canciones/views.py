@@ -253,3 +253,87 @@ def search(request):
 @login_required
 def profile(request):
     return render(request, 'account/profile.html')
+
+#POLITICAS
+def politica_privacidad(request):
+    return render(request, 'canciones/info_pagina.html', {
+        'titulo': 'Política de Privacidad',
+        'contenido': '''
+        En Cancionero Digital Salesiano, respetamos tu privacidad y nos comprometemos a proteger los datos personales que nos proporciones.
+
+        ### 1. Recopilación de información
+        Recopilamos datos como nombre de usuario y dirección de correo electrónico cuando te registras en la plataforma. Esta información se utiliza únicamente con fines de autenticación y personalización de tu experiencia.
+
+        ### 2. Uso de la información
+        Utilizamos los datos recopilados para ofrecerte acceso a funcionalidades como listas personalizadas, favoritos y ajustes de usuario. No compartimos esta información con terceros.
+
+        ### 3. Seguridad de los datos
+        Implementamos medidas de seguridad técnicas y organizativas para proteger tu información frente a accesos no autorizados.
+
+        ### 4. Derechos del usuario
+        Puedes solicitar el acceso, rectificación o eliminación de tus datos escribiéndonos a: contacto@cancionerosalesiano.com
+
+        Esta política es ficticia y se proporciona únicamente con fines académicos.
+        '''
+    })
+def aviso_legal(request):
+    return render(request, 'canciones/info_pagina.html', {
+        'titulo': 'Aviso Legal',
+        'contenido': '''
+        Este sitio web, "Cancionero Digital Salesiano", es un proyecto académico desarrollado como parte de un Trabajo de Fin de Grado.
+
+        ### 1. Titularidad del sitio
+        El sitio está gestionado por un estudiante de Desarrollo de Aplicaciones Web con fines educativos. No representa a ninguna entidad oficial ni comercial.
+
+        ### 2. Propiedad intelectual
+        Todos los contenidos, incluyendo canciones, textos, imágenes o código, son utilizados únicamente para demostración. Si algún contenido infringe derechos, será eliminado inmediatamente previa notificación.
+
+        ### 3. Responsabilidad
+        No nos hacemos responsables del uso indebido que se pueda hacer de la información contenida en este sitio.
+
+        ### 4. Contacto
+        Para cualquier reclamación o consulta, puedes escribir a: contacto@cancionerosalesiano.com
+
+        Este aviso es simulado para propósitos académicos.
+        '''
+    })
+def politica_cookies(request):
+    return render(request, 'canciones/info_pagina.html', {
+        'titulo': 'Política de Cookies',
+        'contenido': '''
+        Esta web utiliza cookies propias y de terceros para mejorar la experiencia del usuario. Dado que es un proyecto académico, el uso de cookies es mínimo y no se utilizan con fines comerciales.
+
+        ### 1. ¿Qué son las cookies?
+        Las cookies son pequeños archivos que se almacenan en tu navegador cuando visitas una web.
+
+        ### 2. Tipos de cookies utilizadas
+        - Cookies técnicas: Necesarias para el funcionamiento del sitio.
+        - Cookies de sesión: Para mantener la sesión iniciada mientras navegas.
+
+        ### 3. Gestión de cookies
+        Puedes eliminar o bloquear las cookies desde tu navegador. Ten en cuenta que esto podría afectar al funcionamiento del sitio.
+
+        Este texto es meramente demostrativo para un trabajo académico.
+        '''
+    })
+def terminos_condiciones(request):
+    return render(request, 'canciones/info_pagina.html', {
+        'titulo': 'Términos y Condiciones',
+        'contenido': '''
+        Bienvenido al sitio web "Cancionero Digital Salesiano". Al acceder y utilizar esta plataforma, aceptas los siguientes términos:
+
+        ### 1. Uso permitido
+        Este sitio está diseñado exclusivamente para uso académico y personal. Está prohibido su uso con fines comerciales o ilícitos.
+
+        ### 2. Registro y cuentas
+        Los usuarios registrados son responsables de la veracidad de los datos proporcionados y del uso adecuado de su cuenta.
+
+        ### 3. Propiedad del contenido
+        Las canciones y listas presentadas son ejemplos educativos. El desarrollador no reclama derechos sobre ellas.
+
+        ### 4. Modificaciones
+        Nos reservamos el derecho de modificar estos términos sin previo aviso. Las versiones actualizadas se publicarán en esta misma página.
+
+        Este texto forma parte de una simulación legal para un Trabajo de Fin de Grado.
+        '''
+    })

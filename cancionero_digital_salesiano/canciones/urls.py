@@ -16,4 +16,9 @@ urlpatterns = [
     path('search/', views.search, name='search'),
 
     path('profile/', profile, name='account_profile'),
+
+    path('privacidad/', views.politica_privacidad, name='privacidad'),
+    path('aviso-legal/', views.aviso_legal, name='aviso_legal'),
+    path('cookies/', views.politica_cookies, name='cookies'),
+    path('terminos/', views.terminos_condiciones, name='terminos'),
 ]
