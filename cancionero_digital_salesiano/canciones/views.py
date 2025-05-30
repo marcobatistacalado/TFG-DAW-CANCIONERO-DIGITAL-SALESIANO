@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from datetime import date, timedelta
-from .models import Cancion, Favorito, TiempoLiturgico
+from .models import Cancion, Favorito, ListaCancion, ListaPersonal, TiempoLiturgico
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 import re
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 # ============================
 # 🗓 CÁLCULOS DE FECHAS Y TIEMPOS LITÚRGICOS
 # ============================
+
 
 def calcular_fecha_pascua(anio):
     """
@@ -31,6 +32,7 @@ def calcular_fecha_pascua(anio):
     dia = ((h + l - 7 * m + 114) % 31) + 1
     return date(anio, mes, dia)
 
+
 def obtener_tiempo_liturgico_actual():
     """
     Devuelve el nombre del tiempo litúrgico actual basado en la fecha actual.
@@ -52,25 +54,28 @@ def obtener_tiempo_liturgico_actual():
     tiempo_ordinario_2 = pascua_fin + timedelta(days=1)
 
     # Calculo del cuarto domingo antes de Navidad (inicio de Adviento)
-    cuarto_domingo_antes_navidad = navidad_inicio - timedelta(days=((navidad_inicio.weekday() + 1) % 7) + 21)
+    cuarto_domingo_antes_navidad = navidad_inicio - timedelta(
+        days=((navidad_inicio.weekday() + 1) % 7) + 21
+    )
     adviento_inicio = cuarto_domingo_antes_navidad
     cristo_rey = adviento_inicio - timedelta(days=7)
 
     # Determinamos en qué periodo litúrgico estamos
     if adviento_inicio <= hoy < navidad_inicio:
-        return 'Adviento'
+        return "Adviento"
     elif navidad_inicio <= hoy <= bautismo_senor:
-        return 'Navidad'
+        return "Navidad"
     elif cuaresma_inicio <= hoy <= cuaresma_fin:
-        return 'Cuaresma'
+        return "Cuaresma"
     elif pascua <= hoy <= pascua_fin:
-        return 'Pascua'
+        return "Pascua"
     elif tiempo_ordinario_1 <= hoy < cuaresma_inicio:
-        return 'Tiempo Ordinario'
+        return "Tiempo Ordinario"
     elif tiempo_ordinario_2 <= hoy < adviento_inicio:
-        return 'Tiempo Ordinario'
+        return "Tiempo Ordinario"
     else:
-        return 'Ampliación'  # Valor por defecto si no coincide con los anteriores
+        return "Ampliación"  # Valor por defecto si no coincide con los anteriores
+
 
 def obtener_tiempo_liturgico(id_tiempo):
     """
@@ -79,9 +84,11 @@ def obtener_tiempo_liturgico(id_tiempo):
     """
     return get_object_or_404(TiempoLiturgico, id_tiempo=id_tiempo)
 
+
 # ============================
 # 🏠 VISTAS PRINCIPALES DE LA APLICACIÓN
 # ============================
+
 
 def index(request):
     """
@@ -89,19 +96,32 @@ def index(request):
     Si no se encuentra, muestra las canciones del tiempo 'Ampliación' por defecto.
     """
     nombre_tiempo = obtener_tiempo_liturgico_actual()
-    tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact=nombre_tiempo).first()
+    tiempo_actual = TiempoLiturgico.objects.filter(
+        nombre_tiempo__iexact=nombre_tiempo
+    ).first()
 
     if not tiempo_actual:
         # Si no se encuentra el tiempo litúrgico calculado, usa 'Ampliación'
-        tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact="Ampliación").first()
+        tiempo_actual = TiempoLiturgico.objects.filter(
+            nombre_tiempo__iexact="Ampliación"
+        ).first()
 
     # Obtener canciones filtradas por el tiempo litúrgico actual
-    canciones = Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo) if tiempo_actual else Cancion.objects.none()
+    canciones = (
+        Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo)
+        if tiempo_actual
+        else Cancion.objects.none()
+    )
 
-    return render(request, 'canciones/index.html', {
-        'tiempo_actual': tiempo_actual,
-        'canciones': canciones,
-    })
+    return render(
+        request,
+        "canciones/index.html",
+        {
+            "tiempo_actual": tiempo_actual,
+            "canciones": canciones,
+        },
+    )
+
 
 def canciones_complete(request):
     tiempos = TiempoLiturgico.objects.all()  # Todos los tiempos litúrgicos disponibles
@@ -109,36 +129,60 @@ def canciones_complete(request):
     canciones_por_tiempo = {}  # Diccionario para almacenar canciones agrupadas
 
     for tiempo in tiempos:
-        canciones_por_tiempo[tiempo.nombre_tiempo] = Cancion.objects.filter(id_tiempo=tiempo.id_tiempo)
+        canciones_por_tiempo[tiempo.nombre_tiempo] = Cancion.objects.filter(
+            id_tiempo=tiempo.id_tiempo
+        )
 
-    return render(request, 'canciones/toggleCanciones.html', {
-        'canciones_por_tiempo': canciones_por_tiempo,
-        'tiempos': tiempos,
-    })
+    return render(
+        request,
+        "canciones/toggleCanciones.html",
+        {
+            "canciones_por_tiempo": canciones_por_tiempo,
+            "tiempos": tiempos,
+        },
+    )
 
 
-'''
+"""
 @login_required
 def lista_favoritos(request):
     # Obtener las canciones favoritas del usuario
     favoritos = Favorito.objects.filter(usuario=request.user).select_related('cancion')
     canciones_favoritas = [f.favorito for f in favoritos]  # Obtener solo las canciones, no los objetos Favorito completos
     return render(request, 'favoritos/lista_favoritos.html', {'canciones': canciones_favoritas})
-'''
+"""
 # ============================
 # 🎸 FUNCIONES DE TRANSPOSE DE ACORDES
 # ============================
 
 # Lista de notas musicales en español con sostenidos (#)
-NOTAS_ESP = ["DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"]
+NOTAS_ESP = [
+    "DO",
+    "DO#",
+    "RE",
+    "RE#",
+    "MI",
+    "FA",
+    "FA#",
+    "SOL",
+    "SOL#",
+    "LA",
+    "LA#",
+    "SI",
+]
 
 # Diccionario para normalizar acordes alterados o con nomenclaturas especiales
 NORMALIZAR = {
-    "E#": "FA", "B#": "DO",
-    "FB": "MI", "CB": "SI",
-    "FA##": "SOL", "DO##": "RE",
-    "MI#": "FA", "SI#": "DO",
+    "E#": "FA",
+    "B#": "DO",
+    "FB": "MI",
+    "CB": "SI",
+    "FA##": "SOL",
+    "DO##": "RE",
+    "MI#": "FA",
+    "SI#": "DO",
 }
+
 
 def obtener_base_y_sufijo(acorde):
     """
@@ -152,9 +196,12 @@ def obtener_base_y_sufijo(acorde):
     # Buscamos qué base musical coincide al inicio del acorde
     for base in sorted(NOTAS_ESP, key=len, reverse=True):
         if acorde_mayus.startswith(base):
-            sufijo = acorde_original[len(base):]  # Lo que sobra después de la base es sufijo
+            sufijo = acorde_original[
+                len(base) :
+            ]  # Lo que sobra después de la base es sufijo
             return base, sufijo
     return None, None  # Si no se encuentra base
+
 
 def transponer_acorde(acorde, semitonos):
     """
@@ -175,12 +222,13 @@ def transponer_acorde(acorde, semitonos):
 
     return nuevo_base + sufijo
 
+
 def transponer_linea(linea, semitonos=1):
     """
     Busca todos los acordes en una línea de texto y los transpone la cantidad de semitonos indicada.
     Usa expresiones regulares para identificar acordes.
     """
-    pattern = r'\b([A-ZÑa-zñ]{2,4}#?(m7|maj7|7M|m|7|sus4|sus2|6|m6)?)\b'
+    pattern = r"\b([A-ZÑa-zñ]{2,4}#?(m7|maj7|7M|m|7|sus4|sus2|6|m6)?)\b"
 
     def reemplazo(match):
         acorde = match.group(0)
@@ -189,10 +237,58 @@ def transponer_linea(linea, semitonos=1):
     # Reemplaza cada acorde encontrado por su versión transpuesta
     return re.sub(pattern, reemplazo, linea)
 
+
 # ============================
 # 🎵 VISTA DETALLE DE CANCIÓN CON TRANSPOSE
 # ============================
 
+
+@login_required
+def detalle_cancion(request, id_cancion):
+    cancion = get_object_or_404(Cancion, id_cancion=id_cancion)
+    semitonos = int(request.GET.get("transpose", 0))
+
+    lineas = cancion.lineacancion_set.all().order_by("linea_num")
+    lineas_transpuestas = []
+    for linea in lineas:
+        contenido = linea.contenido
+        if linea.tipo_linea == "acorde" and semitonos != 0:
+            contenido = transponer_linea(contenido, semitonos)
+        lineas_transpuestas.append(
+            {"contenido": contenido, "tipo_linea": linea.tipo_linea}
+        )
+
+    # Fragmento dinámico para AJAX
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string(
+            "canciones/lineas_fragment.html", {"lineas": lineas_transpuestas}
+        )
+        return JsonResponse({"html": html})
+
+    # Datos adicionales
+    favorito = ...  # Implementa lógica de favorito si aplica
+    tiempo_actual = ...  # Lógica de tiempo litúrgico
+    listas_usuario = ListaPersonal.objects.filter(usuario=request.user)
+    listas_asociadas = ListaPersonal.objects.filter(
+        listacancion__cancion=cancion, usuario=request.user
+    ).distinct()
+
+    return render(
+        request,
+        "canciones/cancion.html",
+        {
+            "cancion": cancion,
+            "lineas": lineas_transpuestas,
+            "semitonos": semitonos,
+            "favorito": favorito,
+            "tiempo_actual": tiempo_actual,
+            "listas_usuario": listas_usuario,
+            "listas_asociadas": listas_asociadas,
+        },
+    )
+
+
+''' Version anterior a las listas
 def song_detail(request, pk):
     """
     Vista detalle de una canción que permite transponer acordes.
@@ -225,10 +321,11 @@ def song_detail(request, pk):
         'lineas': lineas_transpuestas,
         'semitonos': semitonos,
     })
-
+'''
 # ============================
 # 🔍 FUNCIONALIDAD DE BÚSQUEDA
 # ============================
+
 
 def search(request):
     """
@@ -236,37 +333,52 @@ def search(request):
     Solo realiza búsqueda si la longitud de la consulta es >= 3.
     Si es petición AJAX, devuelve fragmento HTML con resultados.
     """
-    query = request.GET.get('q', '')
+    query = request.GET.get("q", "")
     nombre_tiempo = obtener_tiempo_liturgico_actual()
-    tiempo_actual = TiempoLiturgico.objects.filter(nombre_tiempo__iexact=nombre_tiempo).first()
+    tiempo_actual = TiempoLiturgico.objects.filter(
+        nombre_tiempo__iexact=nombre_tiempo
+    ).first()
 
     if len(query) >= 3:
         canciones = Cancion.objects.filter(titulo__icontains=query)
     else:
         # Si la búsqueda es muy corta, muestra canciones del tiempo actual
-        canciones = Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo) if tiempo_actual else Cancion.objects.none()
+        canciones = (
+            Cancion.objects.filter(id_tiempo=tiempo_actual.id_tiempo)
+            if tiempo_actual
+            else Cancion.objects.none()
+        )
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('canciones/canciones_list.html', {'canciones': canciones})
-        return JsonResponse({'html': html})
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string(
+            "canciones/canciones_list.html", {"canciones": canciones}
+        )
+        return JsonResponse({"html": html})
 
-    return render(request, 'canciones/index.html', {
-        'tiempo_actual': tiempo_actual,
-        'canciones': canciones,
-        'busqueda': query,
-    })
+    return render(
+        request,
+        "canciones/index.html",
+        {
+            "tiempo_actual": tiempo_actual,
+            "canciones": canciones,
+            "busqueda": query,
+        },
+    )
 
 
 @login_required
 def profile(request):
-    return render(request, 'account/profile.html')
+    return render(request, "account/profile.html")
 
 
-#POLITICAS
+# POLITICAS
 def politica_privacidad(request):
-    return render(request, 'canciones/info_pagina.html', {
-        'titulo': 'Política de Privacidad',
-        'contenido': '''
+    return render(
+        request,
+        "canciones/info_pagina.html",
+        {
+            "titulo": "Política de Privacidad",
+            "contenido": """
         En Cancionero Digital Salesiano, respetamos tu privacidad y nos comprometemos a proteger los datos personales que nos proporciones.
 
         ### 1. Recopilación de información
@@ -282,12 +394,18 @@ def politica_privacidad(request):
         Puedes solicitar el acceso, rectificación o eliminación de tus datos escribiéndonos a: contacto@cancionerosalesiano.com
 
         Esta política es ficticia y se proporciona únicamente con fines académicos.
-        '''
-    })
+        """,
+        },
+    )
+
+
 def aviso_legal(request):
-    return render(request, 'canciones/info_pagina.html', {
-        'titulo': 'Aviso Legal',
-        'contenido': '''
+    return render(
+        request,
+        "canciones/info_pagina.html",
+        {
+            "titulo": "Aviso Legal",
+            "contenido": """
         Este sitio web, "Cancionero Digital Salesiano", es un proyecto académico desarrollado como parte de un Trabajo de Fin de Grado.
 
         ### 1. Titularidad del sitio
@@ -303,12 +421,18 @@ def aviso_legal(request):
         Para cualquier reclamación o consulta, puedes escribir a: contacto@cancionerosalesiano.com
 
         Este aviso es simulado para propósitos académicos.
-        '''
-    })
+        """,
+        },
+    )
+
+
 def politica_cookies(request):
-    return render(request, 'canciones/info_pagina.html', {
-        'titulo': 'Política de Cookies',
-        'contenido': '''
+    return render(
+        request,
+        "canciones/info_pagina.html",
+        {
+            "titulo": "Política de Cookies",
+            "contenido": """
         Esta web utiliza cookies propias y de terceros para mejorar la experiencia del usuario. Dado que es un proyecto académico, el uso de cookies es mínimo y no se utilizan con fines comerciales.
 
         ### 1. ¿Qué son las cookies?
@@ -322,12 +446,18 @@ def politica_cookies(request):
         Puedes eliminar o bloquear las cookies desde tu navegador. Ten en cuenta que esto podría afectar al funcionamiento del sitio.
 
         Este texto es meramente demostrativo para un trabajo académico.
-        '''
-    })
+        """,
+        },
+    )
+
+
 def terminos_condiciones(request):
-    return render(request, 'canciones/info_pagina.html', {
-        'titulo': 'Términos y Condiciones',
-        'contenido': '''
+    return render(
+        request,
+        "canciones/info_pagina.html",
+        {
+            "titulo": "Términos y Condiciones",
+            "contenido": """
         Bienvenido al sitio web "Cancionero Digital Salesiano". Al acceder y utilizar esta plataforma, aceptas los siguientes términos:
 
         ### 1. Uso permitido
@@ -343,37 +473,138 @@ def terminos_condiciones(request):
         Nos reservamos el derecho de modificar estos términos sin previo aviso. Las versiones actualizadas se publicarán en esta misma página.
 
         Este texto forma parte de una simulación legal para un Trabajo de Fin de Grado.
-        '''
-    })
+        """,
+        },
+    )
+
 
 @login_required
 def toggle_favorito(request):
-    if request.method == 'POST':
-        cancion_id = request.POST.get('cancion_id')
+    if request.method == "POST":
+        cancion_id = request.POST.get("cancion_id")
         cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
 
-        favorito = Favorito.objects.filter(usuario=request.user, cancion=cancion).first()
+        favorito = Favorito.objects.filter(
+            usuario=request.user, cancion=cancion
+        ).first()
 
         if favorito:
             favorito.delete()
-            return JsonResponse({'status': 'eliminado'})
+            return JsonResponse({"status": "eliminado"})
         else:
             Favorito.objects.create(usuario=request.user, cancion=cancion)
-            return JsonResponse({'status': 'agregado'})
-    
-    return JsonResponse({'error': 'Método no permitido'}, status=405)
+            return JsonResponse({"status": "agregado"})
 
+    return JsonResponse({"error": "Método no permitido"}, status=405)
 
 
 def favoritos(request):
 
     # Obtener todas las canciones favoritas del usuario actual
-    favoritos_usuario = Favorito.objects.filter(usuario=request.user).select_related('cancion')
+    favoritos_usuario = Favorito.objects.filter(usuario=request.user).select_related(
+        "cancion"
+    )
 
     # Extraer solo las canciones de los favoritos
     canciones = [fav.cancion for fav in favoritos_usuario]
 
-    return render(request, 'canciones/favoritos.html', {
-        'canciones': canciones,
-    })
+    return render(
+        request,
+        "canciones/favoritos.html",
+        {
+            "canciones": canciones,
+        },
+    )
 
+
+# Lista
+@login_required
+def toggle_list(request):
+    if request.method == "POST":
+        cancion_id = request.POST.get("cancion_id")
+        lista_id = request.POST.get("lista_id")
+        nueva_lista_nombre = request.POST.get("nueva_lista")
+
+        cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
+
+        if nueva_lista_nombre:
+            lista, created = ListaPersonal.objects.get_or_create(
+                nombre=nueva_lista_nombre, usuario=request.user
+            )
+        else:
+            lista = get_object_or_404(ListaPersonal, id=lista_id, usuario=request.user)
+
+        if cancion in lista.canciones.all():
+            lista.canciones.remove(cancion)
+            return JsonResponse({"status": "eliminado"})
+        else:
+            lista.canciones.add(cancion)
+            return JsonResponse({"status": "agregado"})
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+@login_required
+def guardar_cancion_en_lista(request, cancion_id):
+    if request.method == "POST":
+        lista_id = request.POST.get("lista_id")
+        nueva_lista_nombre = request.POST.get("nueva_lista")
+
+        if nueva_lista_nombre:
+            lista, created = ListaPersonal.objects.get_or_create(
+                usuario=request.user, nombre_lista=nueva_lista_nombre
+            )
+        else:
+            lista = get_object_or_404(
+                ListaPersonal, id_lista=lista_id, usuario=request.user
+            )
+
+        cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
+
+        ListaCancion.objects.get_or_create(lista=lista, cancion=cancion)
+
+        return redirect("detalle_cancion", id_cancion=cancion_id)
+
+
+def lista(request):
+    """
+    Vista que muestra todas las listas personales del usuario con sus canciones.
+    """
+    listas = ListaPersonal.objects.filter(usuario=request.user)
+
+    # Cargar canciones asociadas a cada lista (usando la tabla intermedia ListaCancion)
+    listas_con_canciones = []
+    for lista in listas:
+        canciones = Cancion.objects.filter(listacancion__lista=lista)
+        listas_con_canciones.append(
+            {
+                "lista": lista,
+                "canciones": canciones,
+            }
+        )
+
+    return render(
+        request,
+        "canciones/lista.html",
+        {
+            "listas_con_canciones": listas_con_canciones,
+            "usuario": request.user,
+            "listas": listas,
+        },
+    )
+
+def lista_detalle(request, id_lista):
+    """
+    Vista que muestra los detalles de una lista específica, incluyendo las canciones asociadas.
+    """
+    lista = get_object_or_404(ListaPersonal, id_lista=id_lista, usuario=request.user)
+    canciones = Cancion.objects.filter(listacancion__lista=lista)
+
+    return render(
+        request,
+        "canciones/lista_detalle.html",
+        {
+            "lista": lista,
+            "canciones": canciones,
+        },
+    )

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Listas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Listas de {{ usuario.username }}</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for item in listas_con_canciones %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <a href="{% url 'lista_detalle' item.lista.id_lista %}" class="text-decoration-none text-danger">
+                            {{ item.lista.nombre_lista }}
+                        </a>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if item.canciones %}
+                    <div class="row g-3" id="song-list">
+                        <!--{% include 'canciones/canciones_list.html' with canciones=item.canciones %}-->
+                        {% for cancion in item.canciones %}
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-4 cancion">
+                            <div class="card h-100">
+                                <a href="{% url 'detalle_cancion' cancion.id_cancion%}"
+                                    class="btn btn-danger w-100 text-truncate"
+                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ cancion.titulo }}">
+                                    {{ cancion.titulo }}
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Esta lista no tiene canciones.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

@@ -27,53 +27,58 @@
     font-style: normal;
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.main-bg-color{
+.main-bg-color {
     background-color: #d81e14;
 }
-.main-color{
+
+.main-color {
     color: #d81e14;
 }
 
-.width-logo{
+.width-logo {
     width: 120px;
 }
 
-h1,h2,h3,h4,h5{
+h1,
+h2,
+h3,
+h4,
+h5 {
     font-family: 'Playfair Display';
 }
 
-p{
+p {
     font-family: 'Raleway';
 }
 
-pre{
+pre {
     font-size: 1em !important;
 }
 
 /*Estilos del seatrch*/
-/* From Uiverse.io by ercnersoy */ 
-.i-search{
- border: none;
- padding: 1rem;
- border-radius: 1rem;
- background: #e8e8e8;
- box-shadow: 20px 20px 60px #c5c5c5,
-		-20px -20px 60px #ffffff;
- transition: 0.3s;
+/* From Uiverse.io by ercnersoy */
+.i-search {
+    border: none;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #e8e8e8;
+    box-shadow: 20px 20px 60px #c5c5c5,
+        -20px -20px 60px #ffffff;
+    transition: 0.3s;
 }
 
 .i-searh:focus {
- outline-color: #e8e8e8;
- background: #e8e8e8;
- box-shadow: inset 20px 20px 60px #c5c5c5,
-		inset -20px -20px 60px #ffffff;
- transition: 0.3s;
+    outline-color: #e8e8e8;
+    background: #e8e8e8;
+    box-shadow: inset 20px 20px 60px #c5c5c5,
+        inset -20px -20px 60px #ffffff;
+    transition: 0.3s;
 }
 
 /* Estilo para el contenedor del banner con la imagen de fondo */
@@ -85,7 +90,8 @@ pre{
 
 .imagen-banner {
     position: absolute;
-    filter: saturate(90%) brightness(80%); ;
+    filter: saturate(90%) brightness(80%);
+    ;
     top: 0;
     left: 0;
     z-index: -1;
@@ -99,8 +105,9 @@ pre{
     text-align: center;
 }
 
-.letra-movil{
-   max-height: 400px; /* o lo que prefieras */
+.letra-movil {
+    max-height: 400px;
+    /* o lo que prefieras */
     overflow-y: auto;
 }
 
@@ -139,18 +146,19 @@ pre{
     /* Movimiento del ícono */
 }
 
+/*Esto tiene que ir antes o sino se ve mal*/
+.Btn:hover span {
+    color: transparent;
+    display: none;
+    /* Ocultar texto */
+}
 .Btn:hover {
-    width: 100px;
+    width: 100px !important;
     /* Nuevo tamaño de la caja */
     background-color: #00B894;
     /* Fondo cambia a verde neón cuando el mouse pasa */
     box-shadow: 5px 5px 10px rgba(0, 184, 148, 0.5);
     /* Sombra más intensa */
-}
-
-.Btn:hover span {
-    color: transparent;
-    /* Ocultar texto */
 }
 
 .Btn:hover .svg {
@@ -166,16 +174,48 @@ pre{
     transition-duration: .3s;
     box-shadow: 2px 2px 0px rgba(0, 184, 148, 0.5);
 }
+
+/*Casos especiales de tamaño*/
+#btn-pls-speed,
+#btn-mn-speed {
+    width:3em;  /* Ajustar el tamaño al contenido */
+    max-width: 50px !important;
+    padding: 0px 10px;  /* Reducido el padding */
+}
+
+#btn-pls-speed,
+#btn-mn-speed :active{
+    transform: translate(1px, 1px);
+    transition-duration: .3s;
+}
+
+#btn-favorito{
+    width: 13em;
+    max-width: 200px;
+    background-color: #d40c02;
+    box-shadow: 4px 4px 4px rgba(184, 9, 0, 0.5);
+}
+
+#btn-add-list, btn-remove-list{
+    width: 10em;
+    max-width: 200px;
+}
+
 /*Fin de diseño*/
 
 
-/*Tamaño aproximado de tablets...*/
-@media screen and (max-width: 912px) { 
-    .letra-movil{
-        text-align: center;
-    }
-    
+.modal.show {
+    display: block !important;
+    opacity: 1 !important;
+    z-index: 1055 !important;
 }
 
 
 
+/*Tamaño aproximado de tablets...*/
+@media screen and (max-width: 912px) {
+    .letra-movil {
+        text-align: center;
+    }
+
+}

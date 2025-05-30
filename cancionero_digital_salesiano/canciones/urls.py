@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     # Detalle de una canción concreta  (http://…/cancion/23/)
-    path('cancion/<int:pk>/', views.song_detail, name='detalle_cancion'),
+    path('cancion/<int:id_cancion>/', views.detalle_cancion, name='detalle_cancion'),
 
     # Lista completa de canciones  (http://…/canciones/)
     path('canciones/', views.canciones_complete, name='canciones'),
@@ -22,7 +22,10 @@ urlpatterns = [
     path('aviso-legal/', views.aviso_legal, name='aviso_legal'),
     path('cookies/', views.politica_cookies, name='cookies'),
     path('terminos/', views.terminos_condiciones, name='terminos'),
-  
     path('toggle_favorito/', views.toggle_favorito, name='toggle_favorito'),
     path('favoritos/', views.favoritos, name='favoritos'),
+
+    path('lista/', views.lista, name='lista'),
+
+    path('lista/<int:id_lista>/', views.lista_detalle, name='lista_detalle'),
 ]
