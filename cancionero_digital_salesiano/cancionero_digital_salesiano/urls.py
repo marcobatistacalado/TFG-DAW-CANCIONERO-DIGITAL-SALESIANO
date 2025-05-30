@@ -15,8 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from canciones import views
 from django.contrib import admin
-from django.urls import path, include   # include = “reenvía” a otro urls.py
+from django.urls import path, include
+
 
 urlpatterns = [
     # Ruta al panel de administración de Django
@@ -28,5 +30,9 @@ urlpatterns = [
 
     # Todas las rutas que empiecen por /accounts/ las gestiona django-allauth
     path('accounts/', include('allauth.urls')),
-    
+
+    path('toggle-lista/', views.toggle_list, name='toggle_list'),
+
+    path('guardar-en-lista/<int:cancion_id>/', views.guardar_cancion_en_lista, name='guardar_cancion_en_lista'),
+
 ]

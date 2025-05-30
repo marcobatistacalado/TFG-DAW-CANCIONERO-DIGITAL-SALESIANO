@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Detalles de la Lista: {{ lista.nombre_lista }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Título de la lista -->
+    <h2 class="mb-4">Detalles de la Lista: {{ lista.nombre_lista }}</h2>
+
+    <!-- Descripción o cualquier otro detalle de la lista (si existe) -->
+    {% if lista.descripcion %}
+    <p><strong>Descripción:</strong> {{ lista.descripcion }}</p>
+    {% endif %}
+
+    <!-- Lista de Canciones -->
+    <div class="row g-4">
+        {% if canciones %}
+            {% include 'canciones/canciones_list.html'%}
+        {% else %}
+        <p class="text-muted">No hay canciones asociadas a esta lista.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

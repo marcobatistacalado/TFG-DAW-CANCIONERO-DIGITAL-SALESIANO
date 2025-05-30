@@ -34,6 +34,7 @@
                     </div>
                     <div class="mb-3">
                         <p><strong class="main-color">Tono:</strong></p>
+                        <!--Botones de Tono-->
                         <div class="d-flex gap-2 mb-3">
                             <button class="Btn d-flex gap-2" id="btn-up">
                                 <span>Subir Tono</span>
@@ -42,22 +43,22 @@
                             <button id="btn-down" class="Btn d-flex gap-2">
                                 <span>Bajar Tono</span>
                                 <i class="bi bi-arrow-down svg"></i>
-
                             </button>
                         </div>
                     </div>
-                    <div class="mb-3"><!--zoom-->
+                    <div class="mb-3">
+                        <!--zoom-->
                         <div class="d-flex align-items-center gap-2">
                             <div>
-                                <button type="button" class="btn btn-outline-info d-flex gap-2" id="btn-zoom-in">
-                                    <i class="bi bi-zoom-in"></i>
-                                    Aumentar
+                                <button type="button" class="Btn btn-outline-info d-flex gap-2" id="btn-zoom-in">
+                                    <span>Aumentar </span>
+                                    <i class="svg bi bi-zoom-in"></i>
                                 </button>
                             </div>
                             <div>
-                                <button type="button" class="btn btn-outline-warning d-flex gap-2" id="btn-zoom-out">
-                                    <i class="bi bi-zoom-out mr-3"></i>
-                                    Reducir
+                                <button type="button" class="Btn btn-outline-warning d-flex gap-2" id="btn-zoom-out">
+                                    <span>Reducir</span>
+                                    <i class="svg bi bi-zoom-out mr-3"></i>
                                 </button>
                             </div>
                         </div>
@@ -67,45 +68,131 @@
                             <span>Solo letra</span>
                             <i class="bi bi-file-earmark-font icono svg"></i>
                         </button>
-                        <button type="button" class="btn btn-primary d-flex gap-2" id="btn-scroll">
-                            <i class="bi bi-play-circle"></i>scroll
+                    </div>
+                    <!--Scroll y velocidades-->
+                    <div class="mb-3 d-flex gap-2 align-items-center">
+                        <button type="button" class="Btn btn-primary d-flex gap-2 d-flex justify-content-around"  id="btn-scroll">
+                            <span>scroll</span>
+                            <i class="bi bi-play-circle icono"></i>
                         </button>
                         <div class="velocidades d-flex flex-column gap-2">
-                            <button type="button" class="btn btn-primary d-flex gap-2" id="btn-pls-speed">
-                                <i class="bi bi-plus-circle"></i>
+                            <button type="button" class="Btn btn-primary d-flex gap-2" id="btn-pls-speed">
+                                <i class="svg bi bi-plus-circle"></i>
                             </button>
-                            <button type="button" class="btn btn-primary d-flex gap-2" id="btn-mn-speed">
-                                <i class="bi bi-dash-circle"></i>
+                            <button type="button" class="Btn btn-primary d-flex gap-2" id="btn-mn-speed">
+                                <i class="svg bi bi-dash-circle"></i>
                             </button>
                         </div>
                         <div class="d-flex gap-2 align-items-center">
                             <span>Velocidad:</span>
                             <span id="velocidad-actual">1</span>
                         </div>
-
-
+                    </div>
+                    <div class="mb-3 d-flex gap-2 align-items-center">
                         {% if user.is_authenticated %}
                         <script>
                             window.toggleFavoritoUrl = "{% url 'toggle_favorito' %}";
+                            window.toggleListoUrl = "{% url 'toggle_list' %}";
                             window.csrfToken = "{{ csrf_token }}";
                         </script>
-                        <button type="button" class="btn btn-danger d-flex gap-2" id="btn-favorito"
+                        <button type="button" class="Btn btn-danger d-flex gap-2" id="btn-favorito"
                             data-cancion-id="{{ cancion.id_cancion }}">
                             {% if favorito %}
-                            <i class="bi bi-heart-fill"></i> Quitar de Favoritos
+                            <i class=" svg bi bi-heart-fill"></i> 
+                            <span>Quitar de Favoritos</span>
                             {% else %}
-                            <i class="bi bi-heart"></i> Añadir a Favoritos
+                            <i class="svg bi bi-heart"></i> 
+                            <span>Añadir a Favoritos</span>
                             {% endif %}
                         </button>
+                        <!-- Botón para abrir modal de AÑADIR -->
+                        <button type="button" class="Btn btn-success d-flex gap-2" id="btn-add-list">
+                            <i class="svg bi bi-plus-circle"></i> 
+                            <span>Añadir Lista</span>
+                        </button>
+
+                        <!-- Botón para abrir modal de QUITAR -->
+                        {% if listas_asociadas %}
+                        <button type="button" class="Btn btn-danger d-flex gap-2" id="btn-remove-list"
+                            data-existe-lista="{% if listas_asociadas %}true{% else %}false{% endif %}">
+                            <i class=" svg bi bi-dash-circle"></i> 
+                            <span>Quitar Lista</span>
+                        </button>
                         {% endif %}
-
-
-
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-
+        <p>
+        </p>
     </div>
 </div>
+
+<!--Modal de listas-->
+<div class="modal fade" id="modalListas" tabindex="-1" aria-labelledby="modalListasLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'guardar_cancion_en_lista' cancion.id_cancion %}" id="form-listas">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalListasLabel">Agregar a Lista</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="cancion_id" value="{{ cancion.id_cancion }}">
+                    <div class="mb-3">
+                        <label for="lista-select" class="form-label">Selecciona una lista:</label>
+                        <select class="form-select" name="lista_id" id="lista-select">
+                            {% for lista in listas_usuario %}
+                            <option value="{{ lista.id_lista }}">{{ lista.nombre_lista }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="nueva-lista" class="form-label">O crea una nueva:</label>
+                        <input type="text" class="form-control" id="nueva-lista" name="nueva_lista"
+                            placeholder="Nombre de la nueva lista">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalQuitarLista" tabindex="-1" aria-labelledby="modalQuitarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="form-quitar-lista" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalQuitarLabel">Quitar Canción de Lista</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Selecciona de qué lista quieres quitar la canción:</p>
+                    <input type="hidden" name="cancion_id" value="{{ cancion.id_cancion }}">
+                    <select class="form-select" name="lista_id" required>
+                        {% if listas_asociadas %}
+                            {% for lista in listas_asociadas %}
+                                <option value="{{ lista.id_lista }}">{{ lista.nombre_lista }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option disabled selected>No hay listas disponibles</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Quitar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

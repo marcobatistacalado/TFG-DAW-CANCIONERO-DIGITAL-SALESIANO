@@ -162,8 +162,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Cambiar texto e icono del botón según el estado
             soloLetraBtn.innerHTML = acordesVisibles
-                ? `<i class="bi bi-file-earmark-font icono"></i>Solo letra`
-                : `<i class="bi bi-plus-circle"></i> Añadir acordes`;
+                ? `<i class="svg bi bi-file-earmark-font icono"></i><span>Solo letra</span>`
+                : `<i class="svg bi bi-plus-circle"></i> <span>Añadir acordes</span>`;
         });
     }
 
@@ -231,18 +231,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     ) {
                         clearInterval(scrollInterval);
                         isScrolling = false;
-                        scrollBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>scroll`;
+                        scrollBtn.innerHTML = `<i class="svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
                     }
                 }, 50); // Intervalo de tiempo entre cada desplazamiento (ms)
             } else {
                 // Si ya está en scroll, detenerlo al pulsar el botón
                 clearInterval(scrollInterval);
                 isScrolling = false;
-                scrollBtn.innerHTML = `<i class="bi bi-file-earmark-font icono"></i>scroll`;
+                scrollBtn.innerHTML = `<i class=" svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
             }
         });
     }
 
+
+    //Boton de añadir o quitar de favoritos
     const btnFavorito = document.getElementById('btn-favorito');
 
     if (btnFavorito) {
@@ -272,5 +274,53 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+
+    // Abrir modal de quitar
+    const btnRemoveList = document.getElementById('btn-remove-list');
+    const modalElement = document.getElementById('modalQuitar'); // Usa el ID correcto
+    console.log("btnRemoveList encontrado:", btnRemoveList);
+    console.log("modalElement encontrado:", modalElement);
+    console.log("Datos del botón:", btnRemoveList?.dataset);
+    if (btnRemoveList && modalElement) {
+        btnRemoveList.addEventListener('click', function () {
+            const modal = new bootstrap.Modal(modalElement);
+            console.log("Modal de quitar listas abierto", modal);
+            modal.show();
+        });
+    }
+
+    // Enviar formulario de quitar
+    const formQuitar = document.getElementById('form-quitar-lista');
+    if (formQuitar) {
+        formQuitar.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(formQuitar);
+
+            fetch(window.toggleListoUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': window.csrfToken
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Usa el ID correcto del modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalQuitar'));
+                    modal.hide();
+
+                    if (data.status === 'eliminado') {
+                        alert('Canción eliminada de la lista.');
+                        location.reload();  // Para actualizar el estado
+                    } else {
+                        alert('Error al quitar la canción.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    }
 
 });
