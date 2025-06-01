@@ -1,55 +1,86 @@
 from django.contrib import admin
-from .models import (
-    ConfiguracionUsuario,
-    ListaPersonal,
-    Cancion,
-    TiempoLiturgico,
-    ListaCancion,
-    Favorito,
-    LineaCancion
-)
-from django.contrib.auth.models import User  # Usamos el modelo de usuario de Django
+from .models import TiempoLiturgico, Cancion, LineaCancion, Favorito, ListaPersonal, ListaCancion
+
+# ============================
+# ⚙️ CONFIGURACIÓN DEL ADMINISTRADOR
+# ============================
 
 
-@admin.register(ConfiguracionUsuario)
-class ConfiguracionUsuarioAdmin(admin.ModelAdmin):
-    list_display = ("id_usuario", "modo_oscuro", "ultima_tonalidad")
+# ----------------------------
+# 🎵 Canción y líneas asociadas
+# ----------------------------
 
-
-
-@admin.register(ListaPersonal)
-class ListaPersonalAdmin(admin.ModelAdmin):
-    list_display = ("id_lista", "usuario", "nombre_lista")
-    search_fields = ("nombre_lista",)
+class LineaCancionInline(admin.TabularInline):
+    """
+    Permite editar las líneas de una canción directamente desde la página de administración de la canción.
+    Se muestra como un formulario en línea (TabularInline).
+    """
+    model = LineaCancion
+    extra = 1  # Número de formularios en blanco adicionales
 
 
 @admin.register(Cancion)
 class CancionAdmin(admin.ModelAdmin):
-    list_display = ("id_cancion", "titulo", "nombre_tiempo")
-    search_fields = ("titulo",)
+    """
+    Configura la interfaz de administración para el modelo Cancion.
+    Incluye las líneas de canción como formularios en línea.
+    """
+    inlines = [LineaCancionInline]
+    list_display = ('titulo', 'id_tiempo')  # tuple con campos válidos
+    search_fields = ['titulo']  # lista aunque sea un solo campo
 
-    def nombre_tiempo(self, obj):
-        return obj.id_tiempo.nombre_tiempo if obj.id_tiempo else "-"
-    nombre_tiempo.admin_order_field = 'id_tiempo'
-    nombre_tiempo.short_description = 'Tiempo Litúrgico'
 
+# ----------------------------
+# ⛪ Tiempos Litúrgicos
+# ----------------------------
 
 @admin.register(TiempoLiturgico)
 class TiempoLiturgicoAdmin(admin.ModelAdmin):
-    list_display = ("id_tiempo", "nombre_tiempo")
+    """
+    Administra los objetos de Tiempo Litúrgico desde el panel de administración.
+    Permite búsquedas por nombre.
+    """
+    list_display = ['nombre_tiempo']  # lista para un solo campo
+    search_fields = ['nombre_tiempo']  # lista para un solo campo
 
 
-@admin.register(ListaCancion)
-class ListaCancionAdmin(admin.ModelAdmin):
-    list_display = ("lista", "cancion")
-
+# ----------------------------
+# ⭐ Favoritos
+# ----------------------------
 
 @admin.register(Favorito)
 class FavoritoAdmin(admin.ModelAdmin):
-    list_display = ("usuario", "cancion")
+    """
+    Gestión de favoritos en el panel de administración.
+    Muestra el usuario y la canción asociada.
+    """
+    list_display = ('usuario', 'cancion')
+    search_fields = ('usuario__username', 'cancion__titulo')
 
 
-@admin.register(LineaCancion)
-class LineaCancionAdmin(admin.ModelAdmin):
-    list_display = ("id_linea", "linea_num", "tipo_linea", "contenido", "cancion_id")
-    list_filter = ("tipo_linea",)
+# ----------------------------
+# 📜 Listas personales de usuarios
+# ----------------------------
+
+@admin.register(ListaPersonal)
+class ListaPersonalAdmin(admin.ModelAdmin):
+    """
+    Permite la administración de listas personales creadas por los usuarios.
+    Se puede buscar por nombre de lista o usuario.
+    """
+    list_display = ('nombre_lista', 'usuario')
+    search_fields = ('nombre_lista', 'usuario__username')
+
+
+# ----------------------------
+# 🔗 Asociación entre canciones y listas
+# ----------------------------
+
+@admin.register(ListaCancion)
+class ListaCancionAdmin(admin.ModelAdmin):
+    """
+    Administra las relaciones entre canciones y listas en el panel de administración.
+    Útil para ver qué canciones pertenecen a qué listas.
+    """
+    list_display = ('lista', 'cancion')
+    search_fields = ('lista__nombre_lista', 'cancion__titulo')
