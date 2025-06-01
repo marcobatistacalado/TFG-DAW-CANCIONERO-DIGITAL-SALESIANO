@@ -156,87 +156,97 @@ def lista_favoritos(request):
 # ============================
 
 # Lista de notas musicales en español con sostenidos (#)
-NOTAS_ESP = [
-    "DO",
-    "DO#",
-    "RE",
-    "RE#",
-    "MI",
-    "FA",
-    "FA#",
-    "SOL",
-    "SOL#",
-    "LA",
-    "LA#",
-    "SI",
+NOTAS = [
+    "DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"
 ]
 
-# Diccionario para normalizar acordes alterados o con nomenclaturas especiales
-NORMALIZAR = {
-    "E#": "FA",
-    "B#": "DO",
-    "FB": "MI",
-    "CB": "SI",
-    "FA##": "SOL",
+# Diccionario para notas con dobles sostenidos o notas raras que se deben mapear a enharmónicas comunes
+ENHARMONICAS_SIMPLIFICADAS = {
     "DO##": "RE",
+    "RE##": "MI",
+    "FA##": "SOL",
+    "SOL##": "LA",
+    "LA##": "SI",
     "MI#": "FA",
     "SI#": "DO",
+    "DOB": "DO#",
+    "REB": "RE#",
+    "MIB": "MI",
+    "SOLB": "FA#",
+    "LAB": "SOL#",
+    "SIB": "LA#"
 }
 
 
-def obtener_base_y_sufijo(acorde):
-    """
-    Separa la base del acorde (ejemplo: DO#) y el sufijo (ejemplo: m7).
-    Convierte a mayúsculas para hacer la búsqueda.
-    Retorna una tupla (base, sufijo).
-    """
-    acorde_original = acorde.strip().replace("♯", "#")  # Normaliza sostenidos
-    acorde_mayus = acorde_original.upper()
+# Diccionario para notas bemoles equivalentes (enharmónicas)
+BEMOLES = {
+    "DOB": "DO#",
+    "REB": "RE#",
+    "MIB": "MI",
+    "SOLB": "FA#",
+    "LAB": "SOL#",
+    "SIB": "LA#",
+    "B": "SI"  # caso raro pero para ilustrar
+}
 
-    # Buscamos qué base musical coincide al inicio del acorde
-    for base in sorted(NOTAS_ESP, key=len, reverse=True):
-        if acorde_mayus.startswith(base):
-            sufijo = acorde_original[
-                len(base) :
-            ]  # Lo que sobra después de la base es sufijo
-            return base, sufijo
-    return None, None  # Si no se encuentra base
+# Función para obtener índice en lista NOTAS
+def obtener_indice_nota(nota):
+    nota_upper = nota.upper()
+    if nota_upper in NOTAS:
+        return NOTAS.index(nota_upper)
+    elif nota_upper in BEMOLES:
+        return NOTAS.index(BEMOLES[nota_upper])
+    else:
+        return -1
 
+def mantener_case(original, nuevo):
+    # Si el original es todo mayúsculas, devuelve todo mayúsculas
+    if original.isupper():
+        return nuevo.upper()
+    # Si la primera letra es mayúscula, el resto minúsculas
+    elif original[0].isupper():
+        return nuevo.capitalize()
+    # Sino minúsculas
+    else:
+        return nuevo.lower()
 
 def transponer_acorde(acorde, semitonos):
-    """
-    Transpone un acorde dada una cantidad de semitonos.
-    Busca la base, la mueve en la lista NOTAS_ESP, y devuelve el nuevo acorde con sufijo.
-    """
-    base, sufijo = obtener_base_y_sufijo(acorde)
-    if base not in NOTAS_ESP:
-        # Si no reconoce la base, devuelve el acorde tal cual (no transpone)
+    import re
+
+    pattern = r'^([a-zA-Z]+[#b]?)(.*)$'
+    match = re.match(pattern, acorde)
+    if not match:
         return acorde
-    idx = NOTAS_ESP.index(base)
-    nuevo_idx = (idx + semitonos) % len(NOTAS_ESP)
-    nuevo_base = NOTAS_ESP[nuevo_idx]
 
-    # Normaliza si el acorde resultante está en el diccionario NORMALIZAR
-    if nuevo_base + sufijo in NORMALIZAR:
-        return NORMALIZAR[nuevo_base + sufijo]
+    base = match.group(1)
+    sufijo = match.group(2)
 
-    return nuevo_base + sufijo
+    idx = obtener_indice_nota(base)
+    if idx == -1:
+        return acorde
+
+    nuevo_idx = (idx + semitonos) % len(NOTAS)
+    nueva_base = NOTAS[nuevo_idx]
+
+    # Simplificar enharmónicas raras si aparecen
+    # Ej: fa## => sol
+    if nueva_base.upper() in ENHARMONICAS_SIMPLIFICADAS:
+        nueva_base = ENHARMONICAS_SIMPLIFICADAS[nueva_base.upper()]
+
+    nueva_base = mantener_case(base, nueva_base)
+
+    return nueva_base + sufijo
 
 
 def transponer_linea(linea, semitonos=1):
-    """
-    Busca todos los acordes en una línea de texto y los transpone la cantidad de semitonos indicada.
-    Usa expresiones regulares para identificar acordes.
-    """
-    pattern = r"\b([A-ZÑa-zñ]{2,4}#?(m7|maj7|7M|m|7|sus4|sus2|6|m6)?)\b"
+    # Regex para encontrar acordes en la línea (simplificado para tu contexto)
+    pattern = r'\b([a-zA-Z]+[#b]?m?7?|maj7|sus4|sus2|6|m6)\b'
 
     def reemplazo(match):
         acorde = match.group(0)
         return transponer_acorde(acorde, semitonos)
 
-    # Reemplaza cada acorde encontrado por su versión transpuesta
     return re.sub(pattern, reemplazo, linea)
-
 
 # ============================
 # 🎵 VISTA DETALLE DE CANCIÓN CON TRANSPOSE
