@@ -9,7 +9,7 @@
     <div class="card p-4 shadow-sm mx-auto" style="max-width: 600px;">
         <p><strong>Nombre de usuario:</strong> {{ user.username }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Nombre completo:</strong> {{ user.get_full_name }}</p>
+        <!--<p><strong>Nombre completo:</strong> {{ user.get_full_name }}</p>-->
         <p><strong>Fecha de registro:</strong> {{ user.date_joined|date:"d/m/Y H:i" }}</p>
         
         <a href="{% url 'account_change_password' %}" class="btn btn-danger mt-3">
