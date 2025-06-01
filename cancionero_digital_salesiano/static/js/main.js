@@ -277,13 +277,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Abrir modal de quitar
     const btnRemoveList = document.getElementById('btn-remove-list');
-    const modalElement = document.getElementById('modalQuitar'); // Usa el ID correcto
-    console.log("btnRemoveList encontrado:", btnRemoveList);
-    console.log("modalElement encontrado:", modalElement);
-    console.log("Datos del botón:", btnRemoveList?.dataset);
-    if (btnRemoveList && modalElement) {
+    console.log("Botón de quitar lista:", btnRemoveList);
+    const btnAddList = document.getElementById('btn-add-list');
+    if (btnAddList) {
+        btnAddList.addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('modalListas'));
+            console.log("Modal de agregar listas abierto", modal);
+            modal.show();
+        });
+    }
+
+    if (btnRemoveList) {
         btnRemoveList.addEventListener('click', function () {
-            const modal = new bootstrap.Modal(modalElement);
+            console.log("Botón de quitar lista presionado");
+            const modal = new bootstrap.Modal(document.getElementById('modalQuitarLista'));
             console.log("Modal de quitar listas abierto", modal);
             modal.show();
         });
