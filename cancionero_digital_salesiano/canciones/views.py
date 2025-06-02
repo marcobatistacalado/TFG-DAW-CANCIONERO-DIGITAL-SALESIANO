@@ -298,41 +298,6 @@ def detalle_cancion(request, id_cancion):
         },
     )
 
-
-''' Version anterior a las listas
-def song_detail(request, pk):
-    """
-    Vista detalle de una canción que permite transponer acordes.
-    Recibe el parámetro 'transpose' por GET para modificar el tono.
-    Si la petición es AJAX, devuelve solo el fragmento HTML con las líneas transpuestas.
-    """
-    cancion = get_object_or_404(Cancion, pk=pk)
-    lineas = cancion.lineacancion_set.all().order_by('linea_num')
-    semitonos = int(request.GET.get('transpose', 0))
-
-    lineas_transpuestas = []
-    for linea in lineas:
-        contenido = linea.contenido
-        # Solo transpone las líneas que son acordes y si semitonos != 0
-        if linea.tipo_linea == 'acorde' and semitonos != 0:
-            contenido = transponer_linea(contenido, semitonos)
-        lineas_transpuestas.append({
-            'contenido': contenido,
-            'tipo_linea': linea.tipo_linea
-        })
-
-    # Si es una petición AJAX, devolver solo fragmento para actualización dinámica
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('canciones/lineas_fragment.html', {'lineas': lineas_transpuestas})
-        return JsonResponse({'html': html})
-
-    # Render normal de la página completa
-    return render(request, 'canciones/cancion.html', {
-        'cancion': cancion,
-        'lineas': lineas_transpuestas,
-        'semitonos': semitonos,
-    })
-'''
 # ============================
 # 🔍 FUNCIONALIDAD DE BÚSQUEDA
 # ============================
@@ -491,34 +456,39 @@ def terminos_condiciones(request):
 
 @login_required
 def toggle_favorito(request):
+    # Asegurarse de que la solicitud sea tipo POST
     if request.method == "POST":
+        # Obtener el ID de la canción desde el formulario
         cancion_id = request.POST.get("cancion_id")
+        # Obtener la canción desde la base de datos, o lanzar 404 si no existe
         cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
 
+        # Verificar si ya existe un favorito del usuario para esta canción
         favorito = Favorito.objects.filter(
             usuario=request.user, cancion=cancion
         ).first()
 
         if favorito:
+            # Si ya existe, eliminarlo (quitar de favoritos)
             favorito.delete()
             return JsonResponse({"status": "eliminado"})
         else:
+            # Si no existe, agregarlo como favorito
             Favorito.objects.create(usuario=request.user, cancion=cancion)
             return JsonResponse({"status": "agregado"})
 
+    # Si la solicitud no es POST, devolver error 405 (método no permitido)
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @login_required
 def favoritos(request):
+    # Obtener todos los registros de canciones favoritas del usuario
+    favoritos_usuario = Favorito.objects.filter(usuario=request.user).select_related("cancion")
 
-    # Obtener todas las canciones favoritas del usuario actual
-    favoritos_usuario = Favorito.objects.filter(usuario=request.user).select_related(
-        "cancion"
-    )
-
-    # Extraer solo las canciones de los favoritos
+    # Extraer solo las instancias de canciones desde los favoritos
     canciones = [fav.cancion for fav in favoritos_usuario]
 
+    # Renderizar plantilla con la lista de canciones favoritas
     return render(
         request,
         "canciones/favoritos.html",
@@ -527,24 +497,28 @@ def favoritos(request):
         },
     )
 
-
-# Lista
 @login_required
 def toggle_list(request):
+    # Verifica que sea una solicitud POST
     if request.method == "POST":
+        # Obtener datos del formulario
         cancion_id = request.POST.get("cancion_id")
         lista_id = request.POST.get("lista_id")
         nueva_lista_nombre = request.POST.get("nueva_lista")
 
+        # Obtener la canción correspondiente
         cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
 
+        # Si se indicó una nueva lista, crearla (o usar la existente)
         if nueva_lista_nombre:
             lista, created = ListaPersonal.objects.get_or_create(
                 nombre=nueva_lista_nombre, usuario=request.user
             )
         else:
+            # Si no, obtener la lista existente con el ID dado
             lista = get_object_or_404(ListaPersonal, id=lista_id, usuario=request.user)
 
+        # Agregar o quitar la canción de la lista según si ya está o no
         if cancion in lista.canciones.all():
             lista.canciones.remove(cancion)
             return JsonResponse({"status": "eliminado"})
@@ -552,14 +526,19 @@ def toggle_list(request):
             lista.canciones.add(cancion)
             return JsonResponse({"status": "agregado"})
 
+    # Si la solicitud no es POST, devolver error
     return JsonResponse({"error": "Método no permitido"}, status=405)
+
 
 @login_required
 def guardar_cancion_en_lista(request, cancion_id):
+    # Solo acepta solicitudes POST
     if request.method == "POST":
+        # Recoger datos del formulario
         lista_id = request.POST.get("lista_id")
         nueva_lista_nombre = request.POST.get("nueva_lista")
 
+        # Crear o buscar la lista personal según si se ingresó un nuevo nombre
         if nueva_lista_nombre:
             lista, created = ListaPersonal.objects.get_or_create(
                 usuario=request.user, nombre_lista=nueva_lista_nombre
@@ -569,23 +548,28 @@ def guardar_cancion_en_lista(request, cancion_id):
                 ListaPersonal, id_lista=lista_id, usuario=request.user
             )
 
+        # Obtener la canción y asociarla a la lista (si no existe ya)
         cancion = get_object_or_404(Cancion, id_cancion=cancion_id)
-
         ListaCancion.objects.get_or_create(lista=lista, cancion=cancion)
 
+        # Redirigir al detalle de la canción
         return redirect("detalle_cancion", id_cancion=cancion_id)
 
-@login_required
 def lista(request):
     """
     Vista que muestra todas las listas personales del usuario con sus canciones.
     """
+
+    # Obtener todas las listas creadas por el usuario autenticado
     listas = ListaPersonal.objects.filter(usuario=request.user)
 
-    # Cargar canciones asociadas a cada lista (usando la tabla intermedia ListaCancion)
+    # Construir una lista de diccionarios con cada lista y sus canciones asociadas
     listas_con_canciones = []
     for lista in listas:
+        # Obtener las canciones relacionadas con esta lista desde la tabla intermedia ListaCancion
         canciones = Cancion.objects.filter(listacancion__lista=lista)
+
+        # Agregar al resultado
         listas_con_canciones.append(
             {
                 "lista": lista,
@@ -593,6 +577,7 @@ def lista(request):
             }
         )
 
+    # Renderizar la plantilla pasando la estructura de listas con canciones
     return render(
         request,
         "canciones/lista.html",
@@ -608,9 +593,14 @@ def lista_detalle(request, id_lista):
     """
     Vista que muestra los detalles de una lista específica, incluyendo las canciones asociadas.
     """
+
+    # Obtener la lista que pertenece al usuario o lanzar 404 si no existe o no es suya
     lista = get_object_or_404(ListaPersonal, id_lista=id_lista, usuario=request.user)
+
+    # Obtener las canciones asociadas a esta lista
     canciones = Cancion.objects.filter(listacancion__lista=lista)
 
+    # Renderizar la vista detalle de la lista con sus canciones
     return render(
         request,
         "canciones/lista_detalle.html",
@@ -622,11 +612,16 @@ def lista_detalle(request, id_lista):
 
 @login_required
 def exportar_lista_word(request, id_lista):
+    # Obtener la lista específica que pertenece al usuario autenticado
     lista = get_object_or_404(ListaPersonal, id_lista=id_lista, usuario=request.user)
+
+    # Comprobar si se deben incluir acordes (marcado como parámetro en la URL)
     incluir_acordes = request.GET.get('acordes') == '1'
 
+    # Obtener todas las canciones de la lista (usando la relación intermedia)
     canciones = lista.listacancion_set.select_related('cancion').all()
 
+    # Crear el documento Word
     doc = Document()
     doc.add_heading(f'Lista: {lista.nombre_lista}', level=1)
 
@@ -635,28 +630,35 @@ def exportar_lista_word(request, id_lista):
             cancion = lc.cancion
             doc.add_heading(cancion.titulo, level=2)
 
+            # Obtener las líneas de la canción ordenadas por número
             lineas = cancion.lineacancion_set.order_by('linea_num')
 
             for linea in lineas:
-                # Saltar acordes si no están habilitados
+                # Saltar líneas de acordes si el usuario eligió no incluirlos
                 if linea.tipo_linea == 'acorde' and not incluir_acordes:
                     continue
 
+                # Agregar línea al documento
                 p = doc.add_paragraph()
                 run = p.add_run(linea.contenido)
 
+                # Aplicar formato (negrita) a acordes y estribillos
                 if linea.tipo_linea in ['acorde', 'estribillo']:
-                    run.bold = True  # aplicar negrita a acordes (si se muestran) y estribillos
+                    run.bold = True
 
-            doc.add_paragraph('')  # Espacio entre canciones
+            # Agregar espacio entre canciones
+            doc.add_paragraph('')
     else:
+        # Si la lista está vacía, indicarlo en el documento
         doc.add_paragraph('No hay canciones en esta lista.')
 
+    # Preparar respuesta HTTP para descargar el documento
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     )
     filename = f"{lista.nombre_lista.replace(' ', '_')}.docx"
     response['Content-Disposition'] = f'attachment; filename={filename}'
 
+    # Guardar el documento en la respuesta y devolverlo
     doc.save(response)
     return response

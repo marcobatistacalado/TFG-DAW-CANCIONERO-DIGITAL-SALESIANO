@@ -7,17 +7,15 @@
 
     <!-- Cabecera con título y descripción -->
 
-<div class="mb-4 p-4 rounded shadow-sm bg-light">
-    <h2 class="fw-bold mb-2 text-danger">🎵 {{ lista.nombre_lista }}</h2>
+    <div class="mb-4 p-4 rounded shadow-sm bg-light">
+        <h2 class="fw-bold mb-2 text-danger">🎵 {{ lista.nombre_lista }}</h2>
 
-    <form method="get" action="{% url 'exportar_lista_word' lista.id_lista %}" class="d-inline-flex align-items-center gap-2">
-        <input type="checkbox" name="acordes" id="incluir-acordes" value="1" checked>
-        <label for="incluir-acordes" class="mb-0">Incluir acordes</label>
-        <button type="submit" class="btn btn-primary btn-sm">Exportar Word</button>
-    </form>
-</div>
-
-
+        <form method="get" action="{% url 'exportar_lista_word' lista.id_lista %}" class="d-inline-flex align-items-center gap-2">
+            <input type="checkbox" name="acordes" id="incluir-acordes" value="1" checked>
+            <label for="incluir-acordes" class="mb-0">Incluir acordes</label>
+            <button type="submit" class="btn btn-primary btn-sm">Exportar Word</button>
+        </form>
+    </div>
 
     <!-- Sección de canciones -->
     <div class="mt-5">

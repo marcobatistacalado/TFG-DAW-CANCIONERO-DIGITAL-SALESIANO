@@ -253,6 +253,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ============================
+    // 🚀 FAVORITOS Y LISTAS
+    // ============================
 
     //Boton de añadir o quitar de favoritos
     const btnFavorito = document.getElementById('btn-favorito');
