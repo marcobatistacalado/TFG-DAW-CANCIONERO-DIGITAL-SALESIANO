@@ -554,7 +554,6 @@ def toggle_list(request):
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
-
 @login_required
 def guardar_cancion_en_lista(request, cancion_id):
     if request.method == "POST":
