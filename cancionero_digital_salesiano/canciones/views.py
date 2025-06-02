@@ -1,10 +1,11 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from datetime import date, timedelta
-from .models import Cancion, Favorito, ListaCancion, ListaPersonal, TiempoLiturgico
+from .models import Cancion, Favorito, ListaCancion, ListaPersonal, TiempoLiturgico, ListaCancion
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import re
 from django.contrib.auth.decorators import login_required
+from docx import Document
 
 # ============================
 # 🗓 CÁLCULOS DE FECHAS Y TIEMPOS LITÚRGICOS
@@ -619,3 +620,44 @@ def lista_detalle(request, id_lista):
             "canciones": canciones,
         },
     )
+
+@login_required
+def exportar_lista_word(request, id_lista):
+    lista = get_object_or_404(ListaPersonal, id_lista=id_lista, usuario=request.user)
+    incluir_acordes = request.GET.get('acordes') == '1'
+
+    canciones = lista.listacancion_set.select_related('cancion').all()
+
+    doc = Document()
+    doc.add_heading(f'Lista: {lista.nombre_lista}', level=1)
+
+    if canciones:
+        for lc in canciones:
+            cancion = lc.cancion
+            doc.add_heading(cancion.titulo, level=2)
+
+            lineas = cancion.lineacancion_set.order_by('linea_num')
+
+            for linea in lineas:
+                # Saltar acordes si no están habilitados
+                if linea.tipo_linea == 'acorde' and not incluir_acordes:
+                    continue
+
+                p = doc.add_paragraph()
+                run = p.add_run(linea.contenido)
+
+                if linea.tipo_linea in ['acorde', 'estribillo']:
+                    run.bold = True  # aplicar negrita a acordes (si se muestran) y estribillos
+
+            doc.add_paragraph('')  # Espacio entre canciones
+    else:
+        doc.add_paragraph('No hay canciones en esta lista.')
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    )
+    filename = f"{lista.nombre_lista.replace(' ', '_')}.docx"
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+
+    doc.save(response)
+    return response

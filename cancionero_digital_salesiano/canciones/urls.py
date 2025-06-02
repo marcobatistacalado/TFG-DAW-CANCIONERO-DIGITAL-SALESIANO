@@ -28,4 +28,6 @@ urlpatterns = [
     path('lista/', views.lista, name='lista'),
 
     path('lista/<int:id_lista>/', views.lista_detalle, name='lista_detalle'),
+
+    path('listas/<int:id_lista>/exportar-word/', views.exportar_lista_word, name='exportar_lista_word'),
 ]
