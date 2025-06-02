@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.json())
                 .then(data => {
                     // Usa el ID correcto del modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalQuitar'));
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalQuitarLista'));
                     modal.hide();
 
                     if (data.status === 'eliminado') {
