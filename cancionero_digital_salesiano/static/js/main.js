@@ -210,32 +210,42 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Lógica para iniciar/detener el scroll automático al pulsar el botón
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function iniciarScroll() {
+        // Esperar 5 segundos
+        await sleep(2000);
+
+        // Aquí va tu código para iniciar el scroll automático
+        scrollInterval = setInterval(() => {
+            letraContenedor.scrollBy({
+                top: velocidad,
+                behavior: "smooth",
+            });
+            if (
+                letraContenedor.scrollTop + letraContenedor.clientHeight >=
+                letraContenedor.scrollHeight
+            ) {
+                clearInterval(scrollInterval);
+                isScrolling = false;
+                scrollBtn.innerHTML = `<i class="svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
+            }
+        }, 10);
+    }
+
+    // Uso dentro del event listener
     if (scrollBtn && letraContenedor) {
-        scrollBtn.addEventListener("click", () => {
+        scrollBtn.addEventListener("click", async () => {
             if (!isScrolling) {
                 scrollBtn.innerHTML = `<i class="bi bi-pause-circle"></i> Detener scroll`;
                 isScrolling = true;
 
-                scrollInterval = setInterval(() => {
-                    // Scroll suave hacia abajo
-                    letraContenedor.scrollBy({
-                        top: velocidad,
-                        behavior: "smooth",
-                    });
+                await iniciarScroll();
 
-                    // Si llegamos al final del contenido, paramos el scroll automático
-                    if (
-                        letraContenedor.scrollTop + letraContenedor.clientHeight >=
-                        letraContenedor.scrollHeight
-                    ) {
-                        clearInterval(scrollInterval);
-                        isScrolling = false;
-                        scrollBtn.innerHTML = `<i class="svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
-                    }
-                }, 50); // Intervalo de tiempo entre cada desplazamiento (ms)
             } else {
-                // Si ya está en scroll, detenerlo al pulsar el botón
                 clearInterval(scrollInterval);
                 isScrolling = false;
                 scrollBtn.innerHTML = `<i class=" svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
@@ -243,6 +253,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ============================
+    // 🚀 FAVORITOS Y LISTAS
+    // ============================
 
     //Boton de añadir o quitar de favoritos
     const btnFavorito = document.getElementById('btn-favorito');
