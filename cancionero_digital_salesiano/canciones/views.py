@@ -507,7 +507,7 @@ def toggle_favorito(request):
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
-
+@login_required
 def favoritos(request):
 
     # Obtener todas las canciones favoritas del usuario actual
@@ -575,7 +575,7 @@ def guardar_cancion_en_lista(request, cancion_id):
 
         return redirect("detalle_cancion", id_cancion=cancion_id)
 
-
+@login_required
 def lista(request):
     """
     Vista que muestra todas las listas personales del usuario con sus canciones.
@@ -603,6 +603,7 @@ def lista(request):
         },
     )
 
+@login_required
 def lista_detalle(request, id_lista):
     """
     Vista que muestra los detalles de una lista específica, incluyendo las canciones asociadas.

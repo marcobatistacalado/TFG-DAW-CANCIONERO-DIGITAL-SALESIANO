@@ -3,22 +3,27 @@
 {% block title %}Detalles de la Lista: {{ lista.nombre_lista }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <!-- Título de la lista -->
-    <h2 class="mb-4">Detalles de la Lista: {{ lista.nombre_lista }}</h2>
+<div class="container py-5">
 
-    <!-- Descripción o cualquier otro detalle de la lista (si existe) -->
-    {% if lista.descripcion %}
-    <p><strong>Descripción:</strong> {{ lista.descripcion }}</p>
-    {% endif %}
+    <!-- Cabecera con título y descripción -->
+    <div class="mb-4 p-4 rounded shadow-sm bg-light">
+        <h2 class="fw-bold mb-2 text-danger">🎵 {{ lista.nombre_lista }}</h2>
+    </div>
 
-    <!-- Lista de Canciones -->
-    <div class="row g-4">
+    <!-- Sección de canciones -->
+    <div class="mt-5">
+        <h4 class="mb-3 text-secondary">Canciones en esta lista:</h4>
+
         {% if canciones %}
-            {% include 'canciones/canciones_list.html'%}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% include 'canciones/canciones_list.html' %}
+            </div>
         {% else %}
-        <p class="text-muted">No hay canciones asociadas a esta lista.</p>
+            <div class="alert alert-warning text-center" role="alert">
+                <i class="bi bi-exclamation-circle me-2"></i>No hay canciones asociadas a esta lista.
+            </div>
         {% endif %}
     </div>
+
 </div>
 {% endblock %}
