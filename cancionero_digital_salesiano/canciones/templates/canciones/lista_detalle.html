@@ -10,10 +10,15 @@
     <div class="mb-4 p-4 rounded shadow-sm bg-light">
         <h2 class="fw-bold mb-2 text-danger">🎵 {{ lista.nombre_lista }}</h2>
 
-        <form method="get" action="{% url 'exportar_lista_word' lista.id_lista %}" class="d-inline-flex align-items-center gap-2">
+        <form method="get" action="{% url 'exportar_lista_word' lista.id_lista %}"
+            class="d-inline-flex align-items-center gap-2">
             <input type="checkbox" name="acordes" id="incluir-acordes" value="1" checked>
             <label for="incluir-acordes" class="mb-0">Incluir acordes</label>
             <button type="submit" class="btn btn-primary btn-sm">Exportar Word</button>
+            <button type="button" class="btn btn-danger btn-pill" data-bs-toggle="modal"
+                data-bs-target="#modalEliminarLista">
+                Eliminar lista
+            </button>
         </form>
     </div>
 
@@ -22,15 +27,39 @@
         <h4 class="mb-3 text-secondary">Canciones en esta lista:</h4>
 
         {% if canciones %}
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                {% include 'canciones/canciones_list.html' %}
-            </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% include 'canciones/canciones_list.html' %}
+        </div>
         {% else %}
-            <div class="alert alert-warning text-center" role="alert">
-                <i class="bi bi-exclamation-circle me-2"></i>No hay canciones asociadas a esta lista.
-            </div>
+        <div class="alert alert-warning text-center" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>No hay canciones asociadas a esta lista.
+        </div>
         {% endif %}
     </div>
 
 </div>
+
+<!-- Modal para eliminar lista -->
+<div class="modal fade" id="modalEliminarLista" tabindex="-1" aria-labelledby="modalEliminarListaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'eliminar_lista' lista.id_lista %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarListaLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que quieres eliminar esta lista? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

@@ -30,4 +30,7 @@ urlpatterns = [
     path('lista/<int:id_lista>/', views.lista_detalle, name='lista_detalle'),
 
     path('listas/<int:id_lista>/exportar-word/', views.exportar_lista_word, name='exportar_lista_word'),
+
+    path('listas/<int:id_lista>/eliminar/', views.eliminar_lista, name='eliminar_lista'),
+
 ]
