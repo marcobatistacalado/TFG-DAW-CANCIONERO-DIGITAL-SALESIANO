@@ -71,7 +71,8 @@
                     </div>
                     <!--Scroll y velocidades-->
                     <div class="mb-3 d-flex gap-2 align-items-center">
-                        <button type="button" class="Btn btn-primary d-flex gap-2 d-flex justify-content-around"  id="btn-scroll">
+                        <button type="button" class="Btn btn-primary d-flex gap-2 d-flex justify-content-around"
+                            id="btn-scroll">
                             <span>scroll</span>
                             <i class="bi bi-play-circle icono"></i>
                         </button>
@@ -98,16 +99,16 @@
                         <button type="button" class="Btn btn-danger d-flex gap-2" id="btn-favorito"
                             data-cancion-id="{{ cancion.id_cancion }}">
                             {% if favorito %}
-                            <i class=" svg bi bi-heart-fill"></i> 
+                            <i class=" svg bi bi-heart-fill"></i>
                             <span>Quitar de Favoritos</span>
                             {% else %}
-                            <i class="svg bi bi-heart"></i> 
+                            <i class="svg bi bi-heart"></i>
                             <span>Añadir a Favoritos</span>
                             {% endif %}
                         </button>
                         <!-- Botón para abrir modal de AÑADIR -->
                         <button type="button" class="Btn btn-success d-flex gap-2" id="btn-add-list">
-                            <i class="svg bi bi-plus-circle"></i> 
+                            <i class="svg bi bi-plus-circle"></i>
                             <span>Añadir Lista</span>
                         </button>
 
@@ -115,7 +116,8 @@
                         {% if listas_asociadas %}
                         <button type="button" class="Btn btn-danger d-flex gap-2" id="btn-remove-list"
                             data-existe-lista="{% if listas_asociadas %}true{% else %}false{% endif %}">
-                            <i class=" svg bi bi-dash-circle"></i> 
+                            <i class=" svg bi bi-dash-circle" data-bs-toggle="modal"
+                                data-bs-target="#modalQuitarLista"></i>
                             <span>Quitar Lista</span>
                         </button>
                         {% endif %}
@@ -178,11 +180,11 @@
                     <input type="hidden" name="cancion_id" value="{{ cancion.id_cancion }}">
                     <select class="form-select" name="lista_id" required>
                         {% if listas_asociadas %}
-                            {% for lista in listas_asociadas %}
-                                <option value="{{ lista.id_lista }}">{{ lista.nombre_lista }}</option>
-                            {% endfor %}
+                        {% for lista in listas_asociadas %}
+                        <option value="{{ lista.id_lista }}">{{ lista.nombre_lista }}</option>
+                        {% endfor %}
                         {% else %}
-                            <option disabled selected>No hay listas disponibles</option>
+                        <option disabled selected>No hay listas disponibles</option>
                         {% endif %}
                     </select>
                 </div>
@@ -193,7 +195,7 @@
             </form>
         </div>
     </div>
-    
+
 </div>
 
 {% endblock %}

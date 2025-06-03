@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from datetime import date, timedelta
 from .models import Cancion, Favorito, ListaCancion, ListaPersonal, TiempoLiturgico, ListaCancion
@@ -662,3 +663,13 @@ def exportar_lista_word(request, id_lista):
     # Guardar el documento en la respuesta y devolverlo
     doc.save(response)
     return response
+
+
+#Eliminar una lista personal
+def eliminar_lista(request, id_lista):
+    lista = get_object_or_404(ListaPersonal, id_lista=id_lista, usuario=request.user)
+    if request.method == 'POST':
+        lista.delete()
+        messages.success(request, 'La lista ha sido eliminada con éxito.')
+        return redirect('lista')  # Ajusta el nombre a tu vista de listas
+    return redirect('detalle_lista', id_lista=id_lista)
