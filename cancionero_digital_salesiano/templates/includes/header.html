@@ -1,59 +1,64 @@
 {% load static %}
-  <div class="container-fluid px-3">
-    <div class="d-flex flex-wrap align-items-center justify-content-between">
+<div class="container-fluid px-3">
+  <div class="d-flex flex-wrap align-items-center justify-content-between">
 
-      <a href="{% url 'index' %}"
-        class="d-flex align-items-center text-white text-decoration-none order-1 order-md-1 flex-grow-0 me-auto me-md-0">
-        <img src="{% static 'images/logoPrincipal.png' %}" alt="Logo" class="img-fluid" style="max-height: 100px;">
+    <a href="{% url 'index' %}"
+      class="d-flex align-items-center text-white text-decoration-none order-1 order-md-1 flex-grow-0 me-auto me-md-0">
+      <img src="{% static 'images/logoPrincipal.png' %}" alt="Logo" class="img-fluid" style="max-height: 100px;">
+    </a>
+
+    <h1 class="d-block text-center fw-bold m-0 order-3 order-md-2 flex-grow-1 header-title-responsive">
+      Cancionero Salesiano
+    </h1>
+
+    <div class="dropdown ms-auto order-2 order-md-3">
+      <a href="#" class="d-block text-white text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-person-circle" style="font-size: 40px;"></i> <!-- Icono del usuario -->
       </a>
-
-      <h1 class="d-block text-center fw-bold m-0 order-3 order-md-2 flex-grow-1 header-title-responsive">
-        Cancionero Salesiano
-      </h1>
-
-      <div class="dropdown ms-auto order-2 order-md-3">
-        <a href="#" class="d-block text-white text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-person-circle" style="font-size: 40px;"></i> <!-- Icono del usuario -->
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end text-small">
-          {% if user.is_authenticated %}
-          <li><a class="dropdown-item" href="{% url 'account_profile' %}">Perfil</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item" href="{% url 'account_logout' %}">Cerrar sesión</a></li>
-          {% else %}
-          <li><a class="dropdown-item" href="{% url 'account_login' %}">Iniciar Sesión</a></li>
-          <li><a class="dropdown-item" href="{% url 'account_signup' %}">Registrarse</a></li>
-          {% endif %}
-        </ul>
-      </div>
-
-
-      <button class="navbar-toggler d-md-none border-0 ms-2 order-0" type="button" data-bs-toggle="collapse"
-        data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
+      <ul class="dropdown-menu dropdown-menu-end text-small">
+        {% if user.is_authenticated %}
+        <li><a class="dropdown-item" href="{% url 'account_profile' %}">Perfil</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="{% url 'account_logout' %}">Cerrar sesión</a></li>
+        {% else %}
+        <li><a class="dropdown-item" href="{% url 'account_login' %}">Iniciar Sesión</a></li>
+        <li><a class="dropdown-item" href="{% url 'account_signup' %}">Registrarse</a></li>
+        {% endif %}
+      </ul>
     </div>
 
-    <!-- Menú responsive -->
-    <nav class="navbar navbar-expand-md">
-      <div class="collapse navbar-collapse justify-content-center mt-3 mt-md-0" id="mainNavbar">
-        <ul class="navbar-nav fs-5">
-          <li class="nav-item">
-            <a class="nav-link text-white px-3" href="{% url 'index' %}">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white px-3" href="{% url 'canciones' %}">Canciones</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white px-3" href="{% url 'lista'%}">Listas</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white px-3" href="{% url 'favoritos' %}">Favoritos</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+
+    <button class="navbar-toggler d-md-none border-0 ms-2 order-0" type="button" data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
   </div>
+
+  <!-- Menú responsive -->
+  <nav class="navbar navbar-expand-md mt-3 mt-md-0">
+    <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
+      <ul class="navbar-nav fs-5">
+        <li class="nav-item">
+          <a class="nav-link nav-anim text-white px-3 {% if request.path == '/' %}active{% endif %}"
+            href="{% url 'index' %}">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-anim text-white px-3 {% if request.path == '/canciones/' %}active{% endif %}"
+            href="{% url 'canciones' %}">Canciones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-anim text-white px-3 {% if request.path == '/lista/' %}active{% endif %}"
+            href="{% url 'lista' %}">Listas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-anim text-white px-3 {% if request.path == '/favoritos/' %}active{% endif %}"
+            href="{% url 'favoritos' %}">Favoritos</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+</div>

@@ -152,6 +152,7 @@ pre {
     display: none;
     /* Ocultar texto */
 }
+
 .Btn:hover {
     width: 100px !important;
     /* Nuevo tamaño de la caja */
@@ -178,25 +179,28 @@ pre {
 /*Casos especiales de tamaño*/
 #btn-pls-speed,
 #btn-mn-speed {
-    width:3em;  /* Ajustar el tamaño al contenido */
+    width: 3em;
+    /* Ajustar el tamaño al contenido */
     max-width: 50px !important;
-    padding: 0px 10px;  /* Reducido el padding */
+    padding: 0px 10px;
+    /* Reducido el padding */
 }
 
 #btn-pls-speed,
-#btn-mn-speed :active{
+#btn-mn-speed :active {
     transform: translate(1px, 1px);
     transition-duration: .3s;
 }
 
-#btn-favorito{
+#btn-favorito {
     width: 13em;
     max-width: 200px;
     background-color: #d40c02;
     box-shadow: 4px 4px 4px rgba(184, 9, 0, 0.5);
 }
 
-#btn-add-list, btn-remove-list{
+#btn-add-list,
+btn-remove-list {
     width: 10em;
     max-width: 200px;
 }
@@ -218,4 +222,40 @@ pre {
         text-align: center;
     }
 
+}
+
+
+/* Estilo base animado */
+.nav-anim {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-anim::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+/* Hover: subrayado animado */
+.nav-anim:hover::after {
+    width: 100%;
+}
+
+/* Activo: color destacado y línea permanente */
+.nav-anim.active {
+    font-weight: bold;
+    color: white !important;
+    /* Color dorado */
+}
+
+.nav-anim.active::after {
+    width: 100%;
+    background-color: white;
 }
