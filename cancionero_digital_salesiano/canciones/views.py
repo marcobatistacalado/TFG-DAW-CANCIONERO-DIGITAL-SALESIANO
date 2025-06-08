@@ -254,8 +254,6 @@ def transponer_linea(linea, semitonos=1):
 # 🎵 VISTA DETALLE DE CANCIÓN CON TRANSPOSE
 # ============================
 
-
-@login_required
 def detalle_cancion(request, id_cancion):
     cancion = get_object_or_404(Cancion, id_cancion=id_cancion)
     semitonos = int(request.GET.get("transpose", 0))
@@ -280,8 +278,11 @@ def detalle_cancion(request, id_cancion):
     # Datos adicionales
     favorito = ...  # Implementa lógica de favorito si aplica
     tiempo_actual = ...  # Lógica de tiempo litúrgico
-    listas_usuario = ListaPersonal.objects.filter(usuario=request.user)
-    listas_asociadas = ListaPersonal.objects.filter(
+    listas_usuario = []
+    listas_asociadas = []
+    if request.user.is_authenticated:
+        listas_usuario = ListaPersonal.objects.filter(usuario=request.user)
+        listas_asociadas = ListaPersonal.objects.filter(
         listacancion__cancion=cancion, usuario=request.user
     ).distinct()
 
@@ -560,34 +561,40 @@ def lista(request):
     """
     Vista que muestra todas las listas personales del usuario con sus canciones.
     """
+    
+    if request.user.is_authenticated:
+        # Obtener todas las listas creadas por el usuario autenticado
+        listas = ListaPersonal.objects.filter(usuario=request.user)
 
-    # Obtener todas las listas creadas por el usuario autenticado
-    listas = ListaPersonal.objects.filter(usuario=request.user)
+        # Construir una lista de diccionarios con cada lista y sus canciones asociadas
+        listas_con_canciones = []
+        for lista in listas:
+            # Obtener las canciones relacionadas con esta lista desde la tabla intermedia ListaCancion
+            canciones = Cancion.objects.filter(listacancion__lista=lista)
 
-    # Construir una lista de diccionarios con cada lista y sus canciones asociadas
-    listas_con_canciones = []
-    for lista in listas:
-        # Obtener las canciones relacionadas con esta lista desde la tabla intermedia ListaCancion
-        canciones = Cancion.objects.filter(listacancion__lista=lista)
+            # Agregar al resultado
+            listas_con_canciones.append(
+                {
+                    "lista": lista,
+                    "canciones": canciones,
+                }
+            )
 
-        # Agregar al resultado
-        listas_con_canciones.append(
+
+        # Renderizar la plantilla pasando la estructura de listas con canciones
+        return render(
+            request,
+            "canciones/lista.html",
             {
-                "lista": lista,
-                "canciones": canciones,
-            }
+                "listas_con_canciones": listas_con_canciones,
+                "usuario": request.user,
+                "listas": listas,
+            },
         )
-
-    # Renderizar la plantilla pasando la estructura de listas con canciones
-    return render(
-        request,
-        "canciones/lista.html",
-        {
-            "listas_con_canciones": listas_con_canciones,
-            "usuario": request.user,
-            "listas": listas,
-        },
-    )
+    else:
+        # Si el usuario no está autenticado, redirigir a la página de inicio de sesión
+        messages.error(request, "Debes iniciar sesión para ver tus listas.")
+        return redirect("account_login")  
 
 @login_required
 def lista_detalle(request, id_lista):
