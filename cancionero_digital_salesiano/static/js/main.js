@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Cambiar texto e icono del botón según el estado
             soloLetraBtn.innerHTML = acordesVisibles
                 ? `<i class="svg bi bi-file-earmark-font icono"></i><span>Solo letra</span>`
-                : `<i class="svg bi bi-plus-circle"></i> <span>Añadir acordes</span>`;
+                : `<i class="svg bi bi-file-earmark-font"></i> <span>Añadir acordes</span>`;
         });
     }
 
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ) {
                 clearInterval(scrollInterval);
                 isScrolling = false;
-                scrollBtn.innerHTML = `<i class="svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
+                scrollBtn.innerHTML = `<i class="svg bi bi-play-circle icono"></i><span>scroll</span>`;
             }
         }, 10);
     }
@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (scrollBtn && letraContenedor) {
         scrollBtn.addEventListener("click", async () => {
             if (!isScrolling) {
-                scrollBtn.innerHTML = `<i class="bi bi-pause-circle"></i> Detener scroll`;
+                scrollBtn.innerHTML = `<i class="svg bi bi-pause-circle icono"></i><span>Detener scroll</span> `;
                 isScrolling = true;
 
                 await iniciarScroll();
@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 clearInterval(scrollInterval);
                 isScrolling = false;
-                scrollBtn.innerHTML = `<i class=" svg bi bi-file-earmark-font icono"></i><span>scroll</span>`;
+                scrollBtn.innerHTML = `<i class=" svg bi bi-play-circle icono"></i><span>scroll</span>`;
             }
         });
     }

@@ -88,6 +88,10 @@ pre {
     overflow: hidden;
 }
 
+.banner-conteiner-size{
+    max-width: 920px !important;
+}
+
 .imagen-banner {
     position: absolute;
     filter: saturate(90%) brightness(80%);
@@ -221,6 +225,9 @@ btn-remove-list {
     .letra-movil {
         text-align: center;
     }
+    .buscador{
+        min-width: 250px;
+    }
 
 }
 
@@ -258,4 +265,24 @@ btn-remove-list {
 .nav-anim.active::after {
     width: 100%;
     background-color: white;
+}
+
+.logo{
+    position: absolute;
+}
+
+.titulo{
+    position: absolute;
+    top: 1.5em;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.icono{
+
+
 }
