@@ -276,7 +276,11 @@ def detalle_cancion(request, id_cancion):
         return JsonResponse({"html": html})
 
     # Datos adicionales
-    favorito = Favorito.objects.filter(usuario=request.user, cancion=id_cancion)  
+    if request.user.is_authenticated:
+        favorito = Favorito.objects.filter(usuario=request.user, cancion=id_cancion)
+    else:
+        favorito = None  # o un queryset vacío: Favorito.objects.none()
+
     tiempo_actual = TiempoLiturgico.objects.get(id_tiempo=cancion.id_tiempo.id_tiempo)  # Lógica de tiempo litúrgico
     listas_usuario = []
     listas_asociadas = []
