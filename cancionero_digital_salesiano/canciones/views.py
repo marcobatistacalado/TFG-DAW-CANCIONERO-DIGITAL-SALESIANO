@@ -276,7 +276,7 @@ def detalle_cancion(request, id_cancion):
         return JsonResponse({"html": html})
 
     # Datos adicionales
-    favorito = ...  # Implementa lógica de favorito si aplica
+    favorito = Favorito.objects.filter(usuario=request.user, cancion=id_cancion)  
     tiempo_actual = ...  # Lógica de tiempo litúrgico
     listas_usuario = []
     listas_asociadas = []
