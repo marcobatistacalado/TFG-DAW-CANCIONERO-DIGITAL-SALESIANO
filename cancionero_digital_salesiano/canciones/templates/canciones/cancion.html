@@ -29,9 +29,11 @@
                 <!-- Información adicional -->
                 <div class="col-12 col-md-6">
                     <h4 class="fw-bold main-color">Información</h4>
+                    {% if tiempo_actual %}
                     <div class="mb-3">
                         <p><strong class="">Tiempo Litúrgico:</strong> {{ tiempo_actual.nombre_tiempo }}</p>
                     </div>
+                    {% endif %}
                     <div class="mb-3">
                         <p><strong class="main-color">Tono:</strong></p>
                         <!--Botones de Tono-->

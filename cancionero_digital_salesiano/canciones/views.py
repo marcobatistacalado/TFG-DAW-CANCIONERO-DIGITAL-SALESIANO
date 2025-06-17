@@ -277,7 +277,7 @@ def detalle_cancion(request, id_cancion):
 
     # Datos adicionales
     favorito = Favorito.objects.filter(usuario=request.user, cancion=id_cancion)  
-    tiempo_actual = ...  # Lógica de tiempo litúrgico
+    tiempo_actual = TiempoLiturgico.objects.get(id_tiempo=cancion.id_tiempo.id_tiempo)  # Lógica de tiempo litúrgico
     listas_usuario = []
     listas_asociadas = []
     if request.user.is_authenticated:
